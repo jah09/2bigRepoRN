@@ -39,7 +39,7 @@ export default function App() {
        
           <Stack.Screen
           component={LoginModule}
-          name='login'
+          name='LoginPage'
           />
 
           <Stack.Screen
@@ -59,108 +59,3 @@ export default function App() {
   }
   
   
-
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F8E2CF',
-    alignItems: 'center',
-    
-  },
-  imageStyle:{
- 
-  height:150,
-  width:150,
-  marginTop:50
-  },
-  textStyles:{
-    fontSize:19,
-    fontFamily:'nunito-medium'
-  },
-  wrapper:{
-  
-    padding:30,
-    height:200,
-    width: '100%',
-    marginTop:50
-  },
-  ViewemailTextInput:{
-   flexDirection:'row',
-   borderBottomColor:'black',
-   borderBottomWidth:1,
-   paddingBottom:2,
-   marginBottom:25,
-   width:270,
-   marginLeft:20
-  },
-  login_Email_Icon:{
-    marginRight:5
-  },
-  login_Email_textInput:{
-    fontSize:18,
-   
-  },
-
-  ViewPasswordTextInput:{
-    flexDirection:'row',
-    borderBottomColor:'black',
-    borderBottomWidth:1,
-    paddingBottom:2,
-    marginBottom:25,
-    width:270,
-    marginLeft:20,
-    marginTop:15
-   },
-   login_Password_Icon:{
-     marginRight:5
-   },
-   login_Password_textInput:{
-     fontSize:18,
-    
-   },
-   btnClickEye:{
-    position:'absolute',
-    right:10,
-
-   },
-    viewForgotPass:{
-    // backgroundColor:'red',
-    marginTop:-15,
-    fontFamily:'nunito-light',
-    left:200,
-    width:100,
-
-  },
-  viewButtonStyle:{
-    borderRadius:10,
-    paddingVertical:10,
-    paddingHorizontal:10,
-    backgroundColor:'#87cefa',
-    marginTop:55,
-    width:250,
-    left:30,
-
-},
-buttonText:{
-  fontFamily:'nunito-bold',
-  fontWeight:'bold',
-  textTransform:'none',
-  textAlign:'center',
-  fontSize:18,
-  color:'black',
-
-},
-loginIcon:{
-  position:'absolute',
-  right:20,
-  marginTop:7,
-
-},
-createAccLabel:{
-  marginTop:20,
-  justifyContent:'center',
-  textAlign:'center',
-  fontFamily:'nunito-reg'
-}
-});

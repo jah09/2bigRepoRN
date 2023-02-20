@@ -9,7 +9,6 @@ export const globalStyles = StyleSheet.create({
       alignItems: 'center',
     },
     imageStyle:{
-   
       height:150,
       width:150,
       marginTop:50
@@ -40,7 +39,7 @@ export const globalStyles = StyleSheet.create({
       login_Email_textInput:{
         fontSize:18,
         fontFamily:'nunito-reg',
-        
+        width:'90%'
         
       },
     
@@ -85,7 +84,7 @@ export const globalStyles = StyleSheet.create({
         paddingVertical:10,
         paddingHorizontal:10,
         backgroundColor:'#87cefa',
-        marginTop:55,
+        marginTop:85,
         width:250,
         left:30,
     
@@ -102,7 +101,7 @@ export const globalStyles = StyleSheet.create({
     loginIcon:{
       position:'absolute',
       right:20,
-      marginTop:1,
+      marginTop:11,
     
     },
     createAccLabel:{

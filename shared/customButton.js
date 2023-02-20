@@ -1,32 +1,23 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View,Image,Button,TextInput,TouchableOpacity,TouchableWithoutFeedback,Keyboard,ScrollView } from 'react-native';
 import React, {useState}  from 'react';
-    
+import { globalStyles } from '../ForStyle/GlobalStyles';
+import {MaterialIcons} from '@expo/vector-icons';
 
-import react from 'react';
-
-export default function CustomerButton({text,onPress}){
+export default function CustomButton({text,onPress}){
     return(
-        <TouchableOpacity onPress={onPress}>
-        <View style={styles.ButtonStyle}>
-        <Text style={styles.buttonText}>{text}</Text>
-        </View>
+       
+        <TouchableOpacity onPress={onPress}> 
+            <View style={globalStyles.viewButtonStyle}>
+                    <Text style={globalStyles.buttonText}>{text}</Text>
+                    <MaterialIcons 
+                    name="login" 
+                    size={24} 
+                    color="black" 
+                    style={globalStyles.loginIcon}
+                    />
+            </View>
         </TouchableOpacity>
-
     )
 }
 
-const styles=StyleSheet.create({
-    ButtonStyle:{
-        borderRadius:8,
-        paddingVertical:14,
-        paddingHorizontal:10,
-        backgroundColor:'lightskyblue,'
-    },
-    buttonText:{
-      fontFamily:'nunito-semibold',
-      textTransform:'none',
-      textAlign:'center',
-      fontSize:18
-    }
-})

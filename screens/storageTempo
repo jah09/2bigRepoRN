@@ -1,0 +1,116 @@
+    {/* our own logo */}
+                 {/* <Image source={require('../assets/logo_dic.png')}
+                   style={styles.imageStyle}/> 
+
+                    <Text style={[globalStyles.textStyles,{marginTop:30,fontFamily:'nunito-bold',fontSize:25}]}>Create Account </Text> */}
+            
+                    
+                    {/* <View style={globalStyles.wrapper}> */}
+
+                    {/*first name input */}
+                    {/* <View style={globalStyles.ViewemailTextInput}>
+                        <FontAwesome
+                        name='user'
+                        size={23} 
+                        color="black" 
+                        style={globalStyles.login_Email_Icon} />
+                            
+                     <TextInput
+                        placeholder='First Name'
+                         placeholderTextColor='black'
+                        style={globalStyles.login_Email_textInput}
+                        keyboardType='default'/>
+                    </View> */}
+
+                    {/*Middle name input */}
+                    {/* <View style={globalStyles.ViewemailTextInput}>
+                        <FontAwesome
+                        name='user'
+                        size={23} 
+                        color="black" 
+                        style={globalStyles.login_Email_Icon} />
+                            
+                     <TextInput
+                         placeholder='Middle Name'
+                         placeholderTextColor='black'
+                        style={globalStyles.login_Email_textInput}
+                        keyboardType='default'/>
+                     </View> */}
+
+                      {/*Last name input */}
+                      {/* <View style={globalStyles.ViewemailTextInput}>
+                        <FontAwesome
+                        name='user'
+                        size={23} 
+                        color="black" 
+                        style={globalStyles.login_Email_Icon} />
+                            
+                        <TextInput
+                        placeholder='Last Name'
+                        placeholderTextColor='black'
+                        style={globalStyles.login_Email_textInput}
+                        keyboardType='default'/>
+                      </View> */}
+
+                      
+                      {/*Phone number  input */}
+                      {/* <View style={globalStyles.ViewemailTextInput}>
+                        <MaterialIcons
+                        name='contacts'
+                        size={22} 
+                        color="black" 
+                        style={styles.phoneNumberIcon} />
+                            
+                        <TextInput
+                        placeholder='Phone Number'
+                        style={[globalStyles.login_Email_textInput,{marginLeft:3}]}
+                        placeholderTextColor='black'
+                        keyboardType='number-pad'/>
+                      </View> */}
+
+                        {/*Email input */}
+                        {/* <View style={globalStyles.ViewemailTextInput}>
+                        <MaterialIcons
+                        name='email'
+                        size={23} 
+                        color="black" 
+                        style={styles.phoneNumberIcon} />
+                            
+                        <TextInput
+                        placeholder='Email'
+                        style={[globalStyles.login_Email_textInput,{marginLeft:3}]}
+                        placeholderTextColor='black'
+                        keyboardType='default'/>
+                         </View> */}
+
+                         {/*Birth date input */}
+                        {/* <View style={globalStyles.ViewemailTextInput}>
+                        <MaterialIcons
+                        name='date-range'
+                        size={23} 
+                        color="black" 
+                        style={styles.phoneNumberIcon} />
+                            
+                        <TextInput
+                        placeholder='Birth Date'
+                        style={[globalStyles.login_Email_textInput,{marginLeft:3}]}
+                        placeholderTextColor='black'
+                        keyboardType='default'/>
+                         </View> */}
+
+                          {/*Address input */}
+                        {/* <View style={globalStyles.ViewemailTextInput}>
+                        <MaterialCommunityIcons
+                        name='map-marker-radius'
+                        size={23} 
+                        color="black" 
+                        style={styles.phoneNumberIcon} />
+                            
+                        <TextInput
+                        placeholder='Address'
+                        style={[globalStyles.login_Email_textInput,{marginLeft:3}]}
+                        placeholderTextColor='black'
+                        keyboardType='default'/>
+                         </View> */}
+
+                    {/* </View> */}
