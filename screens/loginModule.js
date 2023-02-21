@@ -18,6 +18,10 @@ const Stack = createNativeStackNavigator();
 export default function LoginModule({navigation,text}){
  
 
+  const onPressHandler_forlogin=()=>{
+    navigation.navigate('Map');
+  }
+
   const onPressHandler_forCreateAccount=()=>{
     navigation.navigate('CreateAccount');
   }

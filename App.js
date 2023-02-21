@@ -11,8 +11,10 @@ import react from 'react';
 import LoginModule from './screens/loginModule';
 import CreateAccountModule from './screens/createAccountModule';
 import ForgotPassword from './screens/forgotPasswordModule';
+//import Map from './screens/Map';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+//import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 const Stack=createNativeStackNavigator();
 export default function App() {
@@ -22,12 +24,20 @@ export default function App() {
     'nunito-light':require('./assets/fonts/Nunito-Light.ttf'),
     'nunito-medium':require('./assets/fonts/Nunito-Medium.ttf'),
     'nunito-reg':require('./assets/fonts/Nunito-Regular.ttf'),
-    'nunito-semibold':require('./assets/fonts/Nunito-SemiBold.ttf'),
+    'nunito-semibold':require('./assets/fonts/Nunito-SemiBold.ttf'),  
     'nunito-bold':require('./assets/fonts/Nunito-Bold.ttf')
   });
   if(!fontLoaded){
     return <AppLoading/>
   }
+
+//    Daisy Start
+// const Tab = createBottomTabNavigator();
+
+
+//   END of D
+
+
  
     return (
       <NavigationContainer>
@@ -49,6 +59,8 @@ export default function App() {
           component={ForgotPassword}
           name='forgotPassword'
           />
+
+          
         </Stack.Navigator>
       </NavigationContainer>
          
