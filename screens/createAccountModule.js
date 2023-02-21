@@ -150,7 +150,7 @@ export default function CreateAccountPage({ navigation }) {
                 </TouchableOpacity>
               </View>
               {/*for birth datepicker */}
-              {show &&(
+              {/* {show &&(
                 <DateTimePickerAndroid
                 testID='dateTimePicker'
                 value={date}
@@ -159,7 +159,7 @@ export default function CreateAccountPage({ navigation }) {
                 display='default'
                 onChange={onChange}
                 />
-              )}
+              )} */}
 
               {/*Address input */}
               <View style={styles.ViewAddress}>
