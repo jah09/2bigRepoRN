@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View,Image,Button,TextInput,TouchableOpacity,TouchableWithoutFeedback,Keyboard,ScrollView } from 'react-native';
+import { StyleSheet, Text, View,Image,Button,TextInput,TouchableOpacity,TouchableWithoutFeedback,Keyboard,ScrollView,SafeAreaView, Platform } from 'react-native';
 import React, {useState}  from 'react';
 import Custombtn from '../shared/customButton';
 import  {useFonts} from 'expo-font';
@@ -11,9 +11,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import createAccountScreen from '../screens/createAccountModule';
 import { globalStyles } from '../ForStyle/GlobalStyles';
+import CustomeBtnDatepicker from '../shared/customDatePicker';
+
 const Stack = createNativeStackNavigator();
 
 export default function LoginModule({navigation,text}){
+ 
 
   const onPressHandler_forCreateAccount=()=>{
     navigation.navigate('CreateAccount');
@@ -38,7 +41,9 @@ export default function LoginModule({navigation,text}){
   }
 
     return(
-        <TouchableWithoutFeedback
+      <SafeAreaView style={globalStyles.safeviewStyle}> 
+       <ScrollView contentContainerStyle={{flexGrow:1}}>
+       <TouchableWithoutFeedback
       onPress={()=>{
         Keyboard.dismiss();
       }}>
@@ -100,7 +105,12 @@ export default function LoginModule({navigation,text}){
               </Text>
            </View> 
           </TouchableOpacity>
-          <Custombtn text='Login'/>
+          {/*login btn */}
+          <Custombtn text='Login'/> 
+          
+
+       
+         
           <View style={globalStyles.row}>
               <Text>Don't have an account?</Text>
               <TouchableOpacity onPress={onPressHandler_forCreateAccount}>
@@ -110,8 +120,14 @@ export default function LoginModule({navigation,text}){
         </View>
       </View>
       </TouchableWithoutFeedback>
+       </ScrollView>
+       
+      </SafeAreaView>
+       
     )
 }
+
+
 
 
    

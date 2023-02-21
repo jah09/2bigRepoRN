@@ -32,11 +32,9 @@ export default function App() {
     return (
       <NavigationContainer>
         <Stack.Navigator 
-        screenOptions={{
+          screenOptions={{
           headerShown:false
          }}>
-         
-       
           <Stack.Screen
           component={LoginModule}
           name='LoginPage'

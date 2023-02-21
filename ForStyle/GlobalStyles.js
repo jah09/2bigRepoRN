@@ -101,7 +101,7 @@ export const globalStyles = StyleSheet.create({
     loginIcon:{
       position:'absolute',
       right:20,
-      marginTop:11,
+      marginTop:8,
     
     },
     createAccLabel:{
@@ -118,6 +118,9 @@ export const globalStyles = StyleSheet.create({
     clickHerestyle:{
       fontFamily:'nunito-bold',
       color:'#87cefa'
+    },
+    safeviewStyle:{
+      flex:1
     }
   });
   
