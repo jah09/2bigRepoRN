@@ -13,6 +13,9 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 import CustomBtn from '../shared/customButton';
 import LoginModule from '../screens/loginModule';
+import { Fontisto } from '@expo/vector-icons';
+import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import { render } from 'react-dom';
 
 export default function CreateAccountPage({ navigation }) {
   const onPressHandler_forLogin = () => {
@@ -28,7 +31,23 @@ export default function CreateAccountPage({ navigation }) {
 
   const [visibleStatusBar, setvisibleStatusbar] = useState(false);
   const [styleStatusBar, setstyleStatusBar] = useState(styleTypes[0]);
+  
+  const [date, setDate] = useState(new Date());
+  const [mode,setMode]=useState('date');
+  const [show,setShow]=useState(false);
 
+  const showMode=(currentMode)=>{
+      setShow(true);
+      setMode(currentMode);
+  }
+
+  const onChange=(event,selectedDate)=>{
+    const currentDate= selectedDate || date;
+    setShow(Platform.OS==='android');
+    setDate(currentDate);
+
+    
+  }
   return (
     <SafeAreaView style={styles.safeviewStyle}>
       <TouchableWithoutFeedback onPress={() => {
@@ -122,8 +141,25 @@ export default function CreateAccountPage({ navigation }) {
                   placeholder='Birth Date'
                   style={[globalStyles.login_Email_textInput, { marginLeft: 3 }]}
                   placeholderTextColor='black'
-                  keyboardType='default' />
+                  keyboardType='default'
+                  editable={false} />
+
+                <TouchableOpacity style={globalStyles.btnClickEye} 
+                onPress={()=>showMode('date')}>
+                  <Fontisto name="date" size={23} color="black" style={{marginRight:-5}}/>
+                </TouchableOpacity>
               </View>
+              {/*for birth datepicker */}
+              {show &&(
+                <DateTimePickerAndroid
+                testID='dateTimePicker'
+                value={date}
+                mode={mode}
+                is24Hour={true}
+                display='default'
+                onChange={onChange}
+                />
+              )}
 
               {/*Address input */}
               <View style={styles.ViewAddress}>
