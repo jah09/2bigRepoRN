@@ -9,10 +9,11 @@ import { globalStyles } from '../ForStyle/GlobalStyles';
 import { FontAwesome } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import CustomBtn from '../shared/customButton';
+
 export default function ForgotPasswordModule({navigation}){
 
     const onPressHandler_forLogin=()=>{
-        navigation.navigate('LoginPage');
+        navigation.navigate('Login');
       }
     return(
 

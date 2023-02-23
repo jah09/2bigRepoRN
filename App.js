@@ -1,10 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View,Image,Button,TextInput,TouchableOpacity,TouchableWithoutFeedback,Keyboard,ScrollView } from 'react-native';
-import React, {useState}  from 'react';
-import { globalStyles  } from './ForStyle/GlobalStyles';
-import  {useFonts} from 'expo-font';
+import { StyleSheet, Text, View, Image, Button, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { globalStyles } from './ForStyle/GlobalStyles';
+import { useFonts } from 'expo-font';
 import AppLoading from 'expo-app-loading';
-import {MaterialIcons} from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import react from 'react';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -12,6 +12,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import LoginModule from './screens/loginModule';
 import CreateAccountModule from './screens/createAccountModule';
 import ForgotPassword from './screens/forgotPasswordModule';
+
 import homeModule from './screens/homeModule';
 import orderScreen from './screens/order';
 import profileScreen from './screens/profile';
@@ -115,29 +116,60 @@ export default function App()
     'nunito-reg':require('./assets/fonts/Nunito-Regular.ttf'),
     'nunito-semibold':require('./assets/fonts/Nunito-SemiBold.ttf'),
     'nunito-bold':require('./assets/fonts/Nunito-Bold.ttf')
+    
   });
-  if(!fontLoaded){
-    return <AppLoading/>
+  if (!fontLoaded) {
+    return <AppLoading />
   }
- 
-    return (
-      <NavigationContainer>
-        <Stack.Navigator 
-          screenOptions={{
-          headerShown:false
-         }}>
-          <Stack.Screen
+
+  return (
+
+    
+
+    //   {/* <Stack.Navigator 
+    //         screenOptions={{
+    //         headerShown:false
+    //       }}>
+    //         <Stack.Screen
+    //         component={LoginModule}
+    //         name='LoginPage'
+    //         />
+
+    //         <Stack.Screen
+    //         component={CreateAccountModule}
+    //         name='CreateAccount'
+    //         />
+
+    //         <Stack.Screen
+    //         component={ForgotPassword}
+    //         name='forgotPassword'
+    //         />
+    //       </Stack.Navigator> */}
+  <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false
+        }}
+        initialRouteName='Login'>
+        <Stack.Screen
+          name='TabNavigator'
+          component={BottomTabNavigator}
+        />
+
+        <Stack.Screen
+          name='Login'
           component={LoginModule}
-          name='LoginPage'
-          />
+        />
 
-          <Stack.Screen
-          component={CreateAccountModule}
+        <Stack.Screen
           name='CreateAccount'
-          />
+          component={CreateAccountModule}
+        />
 
-          <Stack.Screen
+        <Stack.Screen
+          name='ForgotPassword'
           component={ForgotPassword}
+
           name='forgotPassword'
           />
           <Stack.Screen
@@ -175,5 +207,8 @@ export default function App()
 
   
 
-  
-  
+  )
+
+
+}
+

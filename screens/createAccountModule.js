@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image, Button, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard, ScrollView, Platform, SafeAreaView } from 'react-native';
-import React, { useState } from 'react';
+import { StyleSheet, Text, View, Image, Button, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard, ScrollView, Platform, SafeAreaView, Alert } from 'react-native';
+import React, { useState,useEffect } from 'react';
 import { globalStyles } from '../ForStyle/GlobalStyles';
 import { useFonts } from 'expo-font';
 import { FontAwesome } from '@expo/vector-icons';
@@ -13,22 +13,85 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 import CustomBtn from '../shared/customButton';
 import LoginModule from '../screens/loginModule';
+import { Fontisto } from '@expo/vector-icons';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { render } from 'react-dom';
+import RNDateTimePicker from '@react-native-community/datetimepicker';
+import * as Location from 'expo-location';
 
 export default function CreateAccountPage({ navigation }) {
   const onPressHandler_forLogin = () => {
-    navigation.navigate('LoginPage');
+    navigation.navigate('Login');
   }
 
+  {/*code for eye button in password input */}
   const [showPassword, setShowPassword] = useState(false);
   const [visible, setVisible] = useState(true);
-
   const [showConfirmPass, setshowConfirmPass] = useState(false);
   const [visibleConfirmPass, setvisibleConfirmPass] = useState(true);
-  const styleTypes = ['default', 'dark-content', 'light-content'];
 
+  {/*style para dili mo overlapp ang logo sa status bar */}
+  const styleTypes = ['default', 'dark-content', 'light-content'];
   const [visibleStatusBar, setvisibleStatusbar] = useState(false);
   const [styleStatusBar, setstyleStatusBar] = useState(styleTypes[0]);
+  
+  {/*for date picker code start */}
+  const [date, setDate] = useState(new Date());
+  const [mode,setMode]=useState('date');
+  const [show,setShow]=useState(false);
 
+  const showMode=(currentMode)=>{
+      setShow(true);
+      setMode(currentMode);
+  }
+
+  const onChange=(event,selectedDate)=>{
+    const currentDate= selectedDate || date;
+    setShow(Platform.OS==='android');
+    setDate(currentDate);
+
+    let tempDate=new Date(currentDate);
+    let fDate=tempDate.getDate() + '/' + (tempDate.getMonth()+1) + '/' + tempDate.getFullYear();
+    setText(fDate);
+  }
+  const[text,setText]=useState('');
+ {/*for date picker code end here */}
+
+ {/* for detecting geolocation and reverse code start here*/}
+
+  const [location, setLocation]=useState();
+  useEffect(()=>{
+    const getPermisions=async()=>{
+     let{status}= await Location.requestForegroundPermissionsAsync();
+     if(status!=='granted'){
+      Alert.alert("Warning","We need your location",[
+          {text:'No,thanks',
+          onPress:()=>
+            console.log('no thanks press'),
+            style:'cancel'
+          
+          },
+          {
+            text:'Ok',
+            onPress:()=>
+            console.log('OK press'),
+          }
+      ]);
+      return; 
+
+     }
+
+     let currenttLocation=await Location.getCurrentPositionAsync();
+     setLocation(currenttLocation);
+     console.log(currenttLocation);
+    };
+    // const onPressforBtn_Permissions=()=>{
+       getPermisions();
+    
+  },[]);
+
+  
+  {/* for detecting geolocation and reverse code end here*/}
   return (
     <SafeAreaView style={styles.safeviewStyle}>
       <TouchableWithoutFeedback onPress={() => {
@@ -122,9 +185,36 @@ export default function CreateAccountPage({ navigation }) {
                   placeholder='Birth Date'
                   style={[globalStyles.login_Email_textInput, { marginLeft: 3 }]}
                   placeholderTextColor='black'
-                  keyboardType='default' />
-              </View>
+                  keyboardType='default'
+                  editable={false} >{text}</TextInput>
+                   {/* {show &&(
+                <RNDateTimePicker
+                testID='datePicker'
+                mode='date'
+                is24Hour={true}
+                display='default'
+                value={new Date()}
+                onChange={onChange}
+                />
+              )} */}
 
+                <TouchableOpacity style={globalStyles.btnClickEye} 
+                onPress={()=>showMode('date')}>
+                  <Fontisto name="date" size={23} color="black" style={{marginRight:-5}}/>
+                </TouchableOpacity>
+              </View>
+              {/*for birth datepicker */}
+             
+              {/* {show && (
+                <DateTimePicker
+                testID='datePicker'
+                value={date}
+                mode={mode}
+                is24Hour={true}
+                display='default'
+                onChange={onChange}
+                />
+              )} */}
               {/*Address input */}
               <View style={styles.ViewAddress}>
                 <MaterialCommunityIcons
@@ -140,8 +230,8 @@ export default function CreateAccountPage({ navigation }) {
                   keyboardType='default'
                   editable={false} />
 
-                <TouchableOpacity style={globalStyles.btnClickEye}>
-
+                <TouchableOpacity style={globalStyles.btnClickEye} >
+                {/* onPress={(()=> getPermisions())} */}
                   <FontAwesome
                     name='map-pin'
                     size={22}
