@@ -12,15 +12,12 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import createAccountScreen from '../screens/createAccountModule';
 import { globalStyles } from '../ForStyle/GlobalStyles';
 import CustomeBtnDatepicker from '../shared/customDatePicker';
+import homeModule from '../screens/homeModule';
 
 const Stack = createNativeStackNavigator();
 
 export default function LoginModule({navigation,text}){
  
-
-  const onPressHandler_forlogin=()=>{
-    navigation.navigate('Map');
-  }
 
   const onPressHandler_forCreateAccount=()=>{
     navigation.navigate('CreateAccount');
@@ -29,6 +26,13 @@ export default function LoginModule({navigation,text}){
   const onPressHandler_forForgotPassword=()=>{
     navigation.navigate('forgotPassword');
   }
+  const onPressHandler_forHomeModule=()=>{
+  navigation.navigate('homeModule');
+
+  }
+
+
+
   const[showPassword, setShowPassword]=useState(false);
   const[visible, setVisible]=useState(true);
   const [fontLoaded]=useFonts({
@@ -110,7 +114,7 @@ export default function LoginModule({navigation,text}){
            </View> 
           </TouchableOpacity>
           {/*login btn */}
-          <Custombtn text='Login'/> 
+          <Custombtn onPress={onPressHandler_forHomeModule} text='Login'/> 
           
 
        
@@ -128,7 +132,7 @@ export default function LoginModule({navigation,text}){
        
       </SafeAreaView>
        
-    )
+    );
 }
 
 
