@@ -12,6 +12,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import createAccountScreen from '../screens/createAccountModule';
 import { globalStyles } from '../ForStyle/GlobalStyles';
 import CustomeBtnDatepicker from '../shared/customDatePicker';
+import homeModule from '../screens/homeModule';
 
 export default function LoginModule({navigation,text}){
  
@@ -28,7 +29,7 @@ export default function LoginModule({navigation,text}){
   const onPressHandler_toMainPage=()=>{
     navigation.navigate('TabNavigator');
   }
-   
+
 
 
   const[showPassword, setShowPassword]=useState(false);
@@ -112,7 +113,9 @@ export default function LoginModule({navigation,text}){
            </View> 
           </TouchableOpacity>
           {/*login btn */}
+
           <Custombtn text='Login' onPress={onPressHandler_toMainPage} /> 
+
           
 
        
@@ -130,7 +133,7 @@ export default function LoginModule({navigation,text}){
        
       </SafeAreaView>
        
-    )
+    );
 }
 
 
