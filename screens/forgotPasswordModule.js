@@ -13,7 +13,7 @@ import CustomBtn from '../shared/customButton';
 export default function ForgotPasswordModule({navigation}){
 
     const onPressHandler_forLogin=()=>{
-        navigation.navigate('LoginPage');
+        navigation.navigate('Login');
       }
     return(
 

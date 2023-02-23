@@ -13,32 +13,38 @@ import createAccountScreen from '../screens/createAccountModule';
 import { globalStyles } from '../ForStyle/GlobalStyles';
 import CustomeBtnDatepicker from '../shared/customDatePicker';
 
-const Stack = createNativeStackNavigator();
-
 export default function LoginModule({navigation,text}){
  
 
   const onPressHandler_forCreateAccount=()=>{
+    // navigation.navigate('CreateAccount');
     navigation.navigate('CreateAccount');
   }
 
   const onPressHandler_forForgotPassword=()=>{
-    navigation.navigate('forgotPassword');
+    navigation.navigate('ForgotPassword');
   }
+
+  const onPressHandler_toMainPage=()=>{
+    navigation.navigate('TabNavigator');
+  }
+   
+
+
   const[showPassword, setShowPassword]=useState(false);
   const[visible, setVisible]=useState(true);
-  const [fontLoaded]=useFonts({
+  // const [fontLoaded]=useFonts({
     
-    'nunito-bold':require('../assets/fonts/Nunito-Bold.ttf'),
-    'nunito-light':require('../assets/fonts/Nunito-Light.ttf'),
-    'nunito-medium':require('../assets/fonts/Nunito-Medium.ttf'),
-    'nunito-semibold':require('../assets/fonts/Nunito-SemiBold.ttf'),
-    'nunito-regular':require('../assets/fonts/Nunito-Regular.ttf')
+  //   'nunito-bold':require('../assets/fonts/Nunito-Bold.ttf'),
+  //   'nunito-light':require('../assets/fonts/Nunito-Light.ttf'),
+  //   'nunito-medium':require('../assets/fonts/Nunito-Medium.ttf'),
+  //   'nunito-semibold':require('../assets/fonts/Nunito-SemiBold.ttf'),
+  //   'nunito-regular':require('../assets/fonts/Nunito-Regular.ttf')
 
-  });
-  if(!fontLoaded){
-    return <AppLoading/>
-  }
+  // });
+  // if(!fontLoaded){
+  //   return <AppLoading/>
+  // }
 
     return(
       <SafeAreaView style={globalStyles.safeviewStyle}> 
@@ -106,7 +112,7 @@ export default function LoginModule({navigation,text}){
            </View> 
           </TouchableOpacity>
           {/*login btn */}
-          <Custombtn text='Login'/> 
+          <Custombtn text='Login' onPress={onPressHandler_toMainPage} /> 
           
 
        
