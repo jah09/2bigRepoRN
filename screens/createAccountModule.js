@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image, Button, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard, ScrollView, Platform, SafeAreaView } from 'react-native';
-import React, { useState } from 'react';
+import { StyleSheet, Text, View, Image, Button, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard, ScrollView, Platform, SafeAreaView, Alert } from 'react-native';
+import React, { useState,useEffect } from 'react';
 import { globalStyles } from '../ForStyle/GlobalStyles';
 import { useFonts } from 'expo-font';
 import { FontAwesome } from '@expo/vector-icons';
@@ -17,23 +17,25 @@ import { Fontisto } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { render } from 'react-dom';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
-
+import * as Location from 'expo-location';
 
 export default function CreateAccountPage({ navigation }) {
   const onPressHandler_forLogin = () => {
     navigation.navigate('Login');
   }
 
+  {/*code for eye button in password input */}
   const [showPassword, setShowPassword] = useState(false);
   const [visible, setVisible] = useState(true);
-
   const [showConfirmPass, setshowConfirmPass] = useState(false);
   const [visibleConfirmPass, setvisibleConfirmPass] = useState(true);
-  const styleTypes = ['default', 'dark-content', 'light-content'];
 
+  {/*style para dili mo overlapp ang logo sa status bar */}
+  const styleTypes = ['default', 'dark-content', 'light-content'];
   const [visibleStatusBar, setvisibleStatusbar] = useState(false);
   const [styleStatusBar, setstyleStatusBar] = useState(styleTypes[0]);
   
+  {/*for date picker code start */}
   const [date, setDate] = useState(new Date());
   const [mode,setMode]=useState('date');
   const [show,setShow]=useState(false);
@@ -53,7 +55,43 @@ export default function CreateAccountPage({ navigation }) {
     setText(fDate);
   }
   const[text,setText]=useState('');
+ {/*for date picker code end here */}
 
+ {/* for detecting geolocation and reverse code start here*/}
+
+  const [location, setLocation]=useState();
+  useEffect(()=>{
+    const getPermisions=async()=>{
+     let{status}= await Location.requestForegroundPermissionsAsync();
+     if(status!=='granted'){
+      Alert.alert("Warning","We need your location",[
+          {text:'No,thanks',
+          onPress:()=>
+            console.log('no thanks press'),
+            style:'cancel'
+          
+          },
+          {
+            text:'Ok',
+            onPress:()=>
+            console.log('OK press'),
+          }
+      ]);
+      return; 
+
+     }
+
+     let currenttLocation=await Location.getCurrentPositionAsync();
+     setLocation(currenttLocation);
+     console.log(currenttLocation);
+    };
+    // const onPressforBtn_Permissions=()=>{
+       getPermisions();
+    
+  },[]);
+
+  
+  {/* for detecting geolocation and reverse code end here*/}
   return (
     <SafeAreaView style={styles.safeviewStyle}>
       <TouchableWithoutFeedback onPress={() => {
@@ -192,8 +230,8 @@ export default function CreateAccountPage({ navigation }) {
                   keyboardType='default'
                   editable={false} />
 
-                <TouchableOpacity style={globalStyles.btnClickEye}>
-
+                <TouchableOpacity style={globalStyles.btnClickEye} >
+                {/* onPress={(()=> getPermisions())} */}
                   <FontAwesome
                     name='map-pin'
                     size={22}
