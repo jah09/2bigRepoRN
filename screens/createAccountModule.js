@@ -14,12 +14,14 @@ import Constants from 'expo-constants';
 import CustomBtn from '../shared/customButton';
 import LoginModule from '../screens/loginModule';
 import { Fontisto } from '@expo/vector-icons';
-import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { render } from 'react-dom';
+import RNDateTimePicker from '@react-native-community/datetimepicker';
+
 
 export default function CreateAccountPage({ navigation }) {
   const onPressHandler_forLogin = () => {
-    navigation.navigate('LoginPage');
+    navigation.navigate('Login');
   }
 
   const [showPassword, setShowPassword] = useState(false);
@@ -46,8 +48,12 @@ export default function CreateAccountPage({ navigation }) {
     setShow(Platform.OS==='android');
     setDate(currentDate);
 
-    
+    let tempDate=new Date(currentDate);
+    let fDate=tempDate.getDate() + '/' + (tempDate.getMonth()+1) + '/' + tempDate.getFullYear();
+    setText(fDate);
   }
+  const[text,setText]=useState('');
+
   return (
     <SafeAreaView style={styles.safeviewStyle}>
       <TouchableWithoutFeedback onPress={() => {
@@ -142,7 +148,17 @@ export default function CreateAccountPage({ navigation }) {
                   style={[globalStyles.login_Email_textInput, { marginLeft: 3 }]}
                   placeholderTextColor='black'
                   keyboardType='default'
-                  editable={false} />
+                  editable={false} >{text}</TextInput>
+                   {/* {show &&(
+                <RNDateTimePicker
+                testID='datePicker'
+                mode='date'
+                is24Hour={true}
+                display='default'
+                value={new Date()}
+                onChange={onChange}
+                />
+              )} */}
 
                 <TouchableOpacity style={globalStyles.btnClickEye} 
                 onPress={()=>showMode('date')}>
@@ -150,9 +166,10 @@ export default function CreateAccountPage({ navigation }) {
                 </TouchableOpacity>
               </View>
               {/*for birth datepicker */}
-              {/* {show &&(
-                <DateTimePickerAndroid
-                testID='dateTimePicker'
+             
+              {/* {show && (
+                <DateTimePicker
+                testID='datePicker'
                 value={date}
                 mode={mode}
                 is24Hour={true}
@@ -160,7 +177,6 @@ export default function CreateAccountPage({ navigation }) {
                 onChange={onChange}
                 />
               )} */}
-
               {/*Address input */}
               <View style={styles.ViewAddress}>
                 <MaterialCommunityIcons
