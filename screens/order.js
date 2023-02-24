@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-export default function StationModule() {
+export default function Order() {
   return (
     <View>
-      <Text> Station modd</Text>
+      <Text>order</Text>
     </View>
   )
 }

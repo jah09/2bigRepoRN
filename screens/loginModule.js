@@ -29,7 +29,7 @@ export default function LoginModule({navigation,text}){
   const onPressHandler_toMainPage=()=>{
     navigation.navigate('TabNavigator');
   }
-   
+
 
 
   const[showPassword, setShowPassword]=useState(false);
@@ -123,7 +123,9 @@ const handleSignUp = () =>{
            </View> 
           </TouchableOpacity>
           {/*login btn */}
+
           <Custombtn text='Login' onPress={onPressHandler_toMainPage} /> 
+
           
 
        
@@ -141,7 +143,7 @@ const handleSignUp = () =>{
        
       </SafeAreaView>
        
-    )
+    );
 }
 
 
