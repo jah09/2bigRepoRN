@@ -170,7 +170,6 @@ export default function App()
           name='ForgotPassword'
           component={ForgotPassword}
 
-          name='forgotPassword'
           />
           <Stack.Screen
           component={HomeModule}
@@ -207,8 +206,5 @@ export default function App()
 
   
 
-  )
-
-
-}
+  
 
