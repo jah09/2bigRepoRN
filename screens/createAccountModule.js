@@ -62,52 +62,31 @@ export default function CreateAccountPage({ navigation }) {
   const [address, setAddress] = useState(null);
   const [addresstext, setAddresstext] = useState('');
   const [isPressed, setIsPressed] = useState(false);
-  const [locationEnabled, setLocationEnabled] = useState(false);
-  const [locationDeclined, setLocationDeclined] = useState(false);
+ 
 
-  const handleLocationEnabled = async () => {
-    const { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-      setLocationEnabled(true);
-      
-      let location = await Location.getCurrentPositionAsync({});
-          setLocation(location);
+  useEffect(() => {
+
+    if (isPressed) {
+      (async () => {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+          console.log('Permission to access location was denied');
+          return;
+        }
+
+        let location = await Location.getCurrentPositionAsync({});
+        setLocation(location);
         console.log(location);
-        return;
+        let address = await reverseGeocodeAsync({
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        });
+        setAddress(address[0].name + ', ' + address[0].city);
+        console.log(address[0].name + ', ' + address[0].city);
+
+      })();
     }
-   
-  }
-  const handleLocationDeclined = () => {
-    setLocationDeclined(true);
-    //console.log('Permission to access location was denied');
-    navigation.navigate('Login');
-      return;
-  }
-  
-
-  // useEffect(() => {
-
-  //   if (isPressed) {
-  //     (async () => {
-  //       let { status } = await Location.requestForegroundPermissionsAsync();
-  //       if (status !== 'granted') {
-  //         console.log('Permission to access location was denied');
-  //         return;
-  //       }
-
-  //       let location = await Location.getCurrentPositionAsync({});
-  //       setLocation(location);
-  //       console.log(location);
-  //       let address = await reverseGeocodeAsync({
-  //         latitude: location.coords.latitude,
-  //         longitude: location.coords.longitude,
-  //       });
-  //       setAddress(address[0].name + ', ' + address[0].city);
-  //       console.log(address[0].name + ', ' + address[0].city);
-
-  //     })();
-  //   }
-  // }, [isPressed]);
+  }, [isPressed]);
 
 
   {/* for detecting geolocation and reverse code end here*/ }
@@ -263,7 +242,7 @@ export default function CreateAccountPage({ navigation }) {
               </View>
 
               {/*Email input */}
-              {/* <View style={styles.ViewEmail}>
+              <View style={styles.ViewEmail}>
                 <MaterialIcons
                   name='email'
                   size={23}
@@ -275,9 +254,9 @@ export default function CreateAccountPage({ navigation }) {
                   style={[globalStyles.login_Email_textInput, { marginLeft: 3 }]}
                   placeholderTextColor='black'
                   keyboardType='default' />
-              </View> */}
+              </View>
 
-              <View>
+              {/* <View>
                 {!locationEnabled && !locationDeclined && (
                   <View>
                     <Text>For a better experience, turn on device location, which uses Google's location service. This will allow us to provide you with more accurate results and tailor your experience to your location.</Text>
@@ -288,11 +267,11 @@ export default function CreateAccountPage({ navigation }) {
                 {locationEnabled && (
                   <Text>Location is enabled.</Text>
                 )}
-              </View>
+              </View> */}
 
 
               {/*password input */}
-              {/* <View style={styles.ViewEmail}>
+              <View style={styles.ViewEmail}>
                 <Ionicons
                   name='md-lock-closed-sharp'
 
@@ -318,10 +297,10 @@ export default function CreateAccountPage({ navigation }) {
                 </TouchableOpacity>
 
 
-              </View> */}
+              </View>
 
               {/*Confirm password input */}
-              {/* <View style={styles.ViewEmail}>
+              <View style={styles.ViewEmail}>
                 <Ionicons
                   name='md-lock-closed-sharp'
 
@@ -345,19 +324,19 @@ export default function CreateAccountPage({ navigation }) {
                     size={23}
                     color="black" />
                 </TouchableOpacity>
-              </View> */}
+              </View>
 
               {/*for for signUP button */}
-              {/* <View style={styles.customBtnStyle}>
+              <View style={styles.customBtnStyle}>
                 <CustomBtn text='Register' />
-              </View> */}
+              </View>
 
-              {/* <View style={[globalStyles.row, { marginTop: 25 }, { marginLeft: 10 }]}>
+              <View style={[globalStyles.row, { marginTop: 25 }, { marginLeft: 10 }]}>
                 <Text>Already have an account?</Text>
                 <TouchableOpacity onPress={onPressHandler_forLogin}>
                   <Text style={globalStyles.clickHerestyle}> Click here.</Text>
                 </TouchableOpacity>
-              </View> */}
+              </View>
 
 
 
