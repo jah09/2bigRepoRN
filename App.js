@@ -38,28 +38,6 @@ export default function App() {
   }
 
   return (
-
-    
-
-    //   {/* <Stack.Navigator 
-    //         screenOptions={{
-    //         headerShown:false
-    //       }}>
-    //         <Stack.Screen
-    //         component={LoginModule}
-    //         name='LoginPage'
-    //         />
-
-    //         <Stack.Screen
-    //         component={CreateAccountModule}
-    //         name='CreateAccount'
-    //         />
-
-    //         <Stack.Screen
-    //         component={ForgotPassword}
-    //         name='forgotPassword'
-    //         />
-    //       </Stack.Navigator> */}
   <NavigationContainer>
       <Stack.Navigator
         screenOptions={{
