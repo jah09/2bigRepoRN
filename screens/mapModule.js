@@ -44,7 +44,7 @@ export default function MapModule() {
         >
           <Marker 
           coordinate={{
-            atitude: location.coords.latitude,
+            latitude: location.coords.latitude,
             longitude: location.coords.longitude
           }}
           title='My Location'
@@ -66,6 +66,6 @@ const styles = StyleSheet.create({
   },
   map:{
     width: '100%',
-    height: 400,
+    height: '100%',
   }
 })

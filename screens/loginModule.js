@@ -12,6 +12,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import createAccountScreen from '../screens/createAccountModule';
 import { globalStyles } from '../ForStyle/GlobalStyles';
 import CustomeBtnDatepicker from '../shared/customDatePicker';
+import { auth } from '../firebaseConfig';
 
 export default function LoginModule({navigation,text}){
  
@@ -33,6 +34,16 @@ export default function LoginModule({navigation,text}){
 
   const[showPassword, setShowPassword]=useState(false);
   const[visible, setVisible]=useState(true);
+
+// database
+
+
+const handleSignUp = () =>{
+  auth
+  .createUserWithEmailAndPass(email, password)
+} 
+
+
   // const [fontLoaded]=useFonts({
     
   //   'nunito-bold':require('../assets/fonts/Nunito-Bold.ttf'),
