@@ -1,11 +1,12 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-export default function AccountProfileModule() {
+export default function AcccountProfileModule() {
   return (
     <View>
-      <Text>accountProfileModule</Text>
+      <Text>Acc profile</Text>
     </View>
   )
 }
 
+const styles = StyleSheet.create({})
