@@ -1,16 +1,19 @@
-import { StyleSheet, Text, SafeAreaView, ScrollView, Image, View, StatusBar, styleStatusBar, TextInput,onChangeText,} from 'react-native'
+import { StyleSheet, Text, SafeAreaView, ScrollView, Image, View, StatusBar, styleStatusBar, TextInput,onChangeText, Pressable } from 'react-native'
 import React from 'react'
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { globalStyles } from '../ForStyle/GlobalStyles'
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import {MD2LightTheme as DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
+import CustomButton from '../shared/customButton';
 
 
 
 
-export default function AccountProfileModule() {
+export default function AccountProfileModule( props) {
+    
+    const { onPress, title = 'Update' } = props;
 
-    const [text, onChangeText] = React.useState('Useless Text');
+    const [text, onChangeText] = React.useState('');
     const [number, onChangeNumber] = React.useState('');
 
     // const theme = {
@@ -27,12 +30,14 @@ export default function AccountProfileModule() {
     //         bold: "AirbnbCereal"+fontSuffix+"-Bold"
     //     }
     // }
+    const onPressHandler_toMainPage=()=>{
+        navigation.navigate('TabNavigator');
+      }
   return (
     <SafeAreaView style={styles.container}>
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView contentContainerStyle={{ flexGrow: 1 ,}}>
                 <View style={styles.titleBar}>
                     <Ionicons name="ios-arrow-back" size={24} color="#52575D"></Ionicons>
-                    <Ionicons name="md-more" size={24} color="#52575D"></Ionicons>
                 </View>
 
                 <View style={{ alignSelf: "center" }}>
@@ -51,19 +56,65 @@ export default function AccountProfileModule() {
                     <Text style = {{ fontWeight: "bold", left: 20}}> Basic Information</Text>
              </View>
 
+             <View>
+             
              <TextInput
-             label='Name'
              style={styles.input}
             onChangeText={onChangeText}
+            placeholder="First Name"
             value={text}
       />
+             {/* <TextInput
+                style={styles.input}
+                onChangeText={onChangeNumber}
+                value={number}
+                placeholder="Middle Name"
+                keyboardType="numeric"
+            /> */}
+             <TextInput
+             style={styles.input}
+            onChangeText={onChangeText}
+            placeholder="Middle Name"
+            value={text}
+      />
+             <TextInput
+             style={styles.input}
+            onChangeText={onChangeText}
+            placeholder="Last Name"
+            value={text}
+      />
+    
              <TextInput
                 style={styles.input}
                 onChangeText={onChangeNumber}
                 value={number}
-                placeholder="useless placeholder"
+                placeholder="Contact Number"
                 keyboardType="numeric"
             />
+       <TextInput
+             style={styles.input}
+            onChangeText={onChangeText}
+            placeholder="Email"
+            value={text}
+      />
+       <TextInput
+             style={styles.input}
+            onChangeText={onChangeText}
+            placeholder="Address"
+            value={text}
+        
+      />
+       <TextInput
+             style={styles.input}
+            onChangeText={onChangeText}
+            placeholder="Date of Birth"
+            value={text}
+      />
+         
+            </View>
+            <Pressable style={styles.button} onPress={onPress}>
+      <Text style={styles.text}>{title}</Text>
+    </Pressable>
 
 
 {/* <TextInput
@@ -88,9 +139,25 @@ const styles = StyleSheet.create({
         backgroundColor: "lightcyan"
     },
     text: {
-        fontFamily: "HelveticaNeue",
-        color: "#52575D"
+        fontSize: 16,
+    lineHeight: 21,
+    fontWeight: 'bold',
+    letterSpacing: 0.25,
+    color: 'white',
     },
+    button: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 32,
+        borderRadius: 4,
+        elevation: 3,
+        backgroundColor: 'seagreen',
+        width: 150,
+        height: 50,
+        marginLeft: 110,
+      
+      },
     image: {
         flex: 1,
         height: undefined,
@@ -99,8 +166,9 @@ const styles = StyleSheet.create({
     titleBar: {
         flexDirection: "row",
         justifyContent: "space-between",
-        marginTop: 24,
-        marginHorizontal: 16
+        marginTop: 54,
+        marginHorizontal: 16,
+        color: "black"
     },
     subText: {
         fontSize: 12,

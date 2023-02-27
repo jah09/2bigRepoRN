@@ -125,7 +125,9 @@ return(
             />
 
             <Tab.Screen name='Notification'
+            
             component={notificationModule}/>
+
 
             <Tab.Screen name='Profile'
             component={ProfileModule}/>
