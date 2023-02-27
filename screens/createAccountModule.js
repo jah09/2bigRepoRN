@@ -61,18 +61,19 @@ export default function CreateAccountPage({ navigation }) {
   const [location, setLocation] = useState(null);
   const [address, setAddress] = useState(null);
   const [addresstext, setAddresstext] = useState('');
+  const [isPressed, setIsPressed] = useState(false);
+ 
 
-  
+  useEffect(() => {
 
-  const onPressHandlerforLocation=()=>{
-    useEffect(() => {
+    if (isPressed) {
       (async () => {
         let { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== 'granted') {
           console.log('Permission to access location was denied');
           return;
         }
-  
+
         let location = await Location.getCurrentPositionAsync({});
         setLocation(location);
         console.log(location);
@@ -80,12 +81,13 @@ export default function CreateAccountPage({ navigation }) {
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,
         });
-       setAddress(address[0].name+', '+ address[0].city);
-       console.log(address[0].name+', '+ address[0].city);
-       
+        setAddress(address[0].name + ', ' + address[0].city);
+        console.log(address[0].name + ', ' + address[0].city);
+
       })();
-    }, []);
-  }
+    }
+  }, [isPressed]);
+
 
   {/* for detecting geolocation and reverse code end here*/ }
   return (
@@ -109,7 +111,7 @@ export default function CreateAccountPage({ navigation }) {
                 fontSize: 25
               }]}>Create Account </Text>
 
-              
+
               <StatusBar backgroundColor='black' styleStatusBar={styleStatusBar} />
               {/*first name input */}
               <View style={styles.ViewFirstname}>
@@ -228,8 +230,8 @@ export default function CreateAccountPage({ navigation }) {
                   keyboardType='default'
                   editable={false} >{address}</TextInput>
 
-                <TouchableOpacity style={globalStyles.btnClickEye} onPress={onPressHandlerforLocation}>
-                  
+                <TouchableOpacity style={globalStyles.btnClickEye} onPress={() => setIsPressed(true)}>
+
                   <FontAwesome
                     name='map-pin'
                     size={22}
@@ -253,6 +255,19 @@ export default function CreateAccountPage({ navigation }) {
                   placeholderTextColor='black'
                   keyboardType='default' />
               </View>
+
+              {/* <View>
+                {!locationEnabled && !locationDeclined && (
+                  <View>
+                    <Text>For a better experience, turn on device location, which uses Google's location service. This will allow us to provide you with more accurate results and tailor your experience to your location.</Text>
+                    <Button title="Turn On Location" onPress={handleLocationEnabled} />
+                    <Button title="No Thanks" onPress={handleLocationDeclined} />
+                  </View>
+                )}
+                {locationEnabled && (
+                  <Text>Location is enabled.</Text>
+                )}
+              </View> */}
 
 
               {/*password input */}
