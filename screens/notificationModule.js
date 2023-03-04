@@ -44,14 +44,10 @@ import React from 'react';
 
 export default function notificationModule() {
   return (
-    <SafeAreaView style={styles.container}>
-            <ScrollView contentContainerStyle={{ flexGrow: 1 ,}}>
-      <Text style= {{alignItems: "center",
-        justifyContent: "center", top: 50,left: 120, fontSize: 30}}>Notification</Text>
-        <RefreshControl style= {styles.scrollView}
-        refreshing={refreshing} onRefresh={onRefresh} />
-        </ScrollView>
-      </SafeAreaView>
+
+    <View style={{alignItems:'center',right:30}}>
+   
+    </View>
 
   )
 }
