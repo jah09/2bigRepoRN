@@ -7,7 +7,7 @@ export default function NotificationModule({navigation,onPress}) {
   }
   return (
     <View style={{alignItems:'center',right:30}}>
-      <Custombtn text='Back to Login Page' onPress={onPressHandler_toMainPage} /> 
+   
     </View>
   )
 }

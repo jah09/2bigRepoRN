@@ -1,24 +1,14 @@
-import { StyleSheet, Text, View, Alert } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import React from 'react'
 import { useState, useEffect } from 'react';
 import * as Location from 'expo-location';
 import MapView, { Marker } from 'react-native-maps';
 
+//export const mapRef=React.createRef();
 export default function MapModule() {
   const [location, setLocation] = useState();
   const [errorMsg, setErrorMsg] = useState(null);
-  // useEffect(() => {
-  //   Geolocation.getCurrentPosition(
-  //     position => {
-  //       setLocation(position.coords);
-  //     },
-  //     error => {
-  //       //console.log(error);
-  //       Alert.alert("Warning",error,"OK");
-  //     },
-  //     { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-  //   );
-  // }, []);
+  
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestBackgroundPermissionsAsync();
@@ -41,16 +31,21 @@ export default function MapModule() {
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421
           }}
+          
+          showsUserLocation={true}
+          showsMyLocationButton={true}
         >
-          <Marker 
-          coordinate={{
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude
-          }}
-          title='My Location'
-          description='naa ko sa andang'
-          />
-
+          <Marker
+            coordinate={{
+              latitude: location.coords.latitude,
+              longitude: location.coords.longitude
+            }}
+            title='My Location'
+            description='Bahog nawng'
+          >
+          
+          </Marker>
+          
         </MapView>
 
       )}
@@ -64,7 +59,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
-  map:{
+  map: {
     width: '100%',
     height: '100%',
   }

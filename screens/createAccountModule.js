@@ -1,19 +1,15 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image, Button, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard, ScrollView, Platform, SafeAreaView, Alert, PermissionsAndroid } from 'react-native';
+import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard, ScrollView, Platform, SafeAreaView } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { globalStyles } from '../ForStyle/GlobalStyles';
 import { useFonts } from 'expo-font';
 import { FontAwesome } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
-import react from 'react';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import Constants from 'expo-constants';
 import CustomBtn from '../shared/customButton';
-import LoginModule from '../screens/loginModule';
 import { Fontisto } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import RNDateTimePicker from '@react-native-community/datetimepicker';
 import * as Location from 'expo-location';
 import { geocodeAsync, reverseGeocodeAsync } from 'expo-location';
 
@@ -39,7 +35,7 @@ export default function CreateAccountPage({ navigation }) {
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
-
+  
   const showMode = (currentMode) => {
     setShow(true);
     setMode(currentMode);
@@ -47,7 +43,7 @@ export default function CreateAccountPage({ navigation }) {
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
-    setShow(Platform.OS === 'android');
+    setShow(Platform.OS === 'ios');
     setDate(currentDate);
 
     let tempDate = new Date(currentDate);
@@ -81,8 +77,9 @@ export default function CreateAccountPage({ navigation }) {
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,
         });
+         
         setAddress(address[0].name + ', ' + address[0].city);
-        console.log(address[0].name + ', ' + address[0].city);
+        console.log(address[0].name + ', '+address[0].subregion+',' + address[0].city);
 
       })();
     }
@@ -187,16 +184,7 @@ export default function CreateAccountPage({ navigation }) {
                   placeholderTextColor='black'
                   keyboardType='default'
                   editable={false} >{text}</TextInput>
-                {/* {show &&(
-                <RNDateTimePicker
-                testID='datePicker'
-                mode='date'
-                is24Hour={true}
-                display='default'
-                value={new Date()}
-                onChange={onChange}
-                />
-              )} */}
+            
 
                 <TouchableOpacity style={globalStyles.btnClickEye}
                   onPress={() => showMode('date')}>
@@ -205,7 +193,7 @@ export default function CreateAccountPage({ navigation }) {
               </View>
               {/*for birth datepicker */}
 
-              {/* {show && (
+              {show && (
                 <DateTimePicker
                 testID='datePicker'
                 value={date}
@@ -213,8 +201,10 @@ export default function CreateAccountPage({ navigation }) {
                 is24Hour={true}
                 display='default'
                 onChange={onChange}
+                
+               
                 />
-              )} */}
+              )}
               {/*Address input */}
               <View style={styles.ViewAddress}>
                 <MaterialCommunityIcons
