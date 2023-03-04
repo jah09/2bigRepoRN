@@ -1,3 +1,4 @@
+
 import {
   StyleSheet,
   Text,
@@ -53,6 +54,7 @@ export default function AccountProfileModule() {
           </Text>
         </View>
 
+
         <TextInput
           label="Name"
           style={styles.input}
@@ -67,7 +69,9 @@ export default function AccountProfileModule() {
           keyboardType="numeric"
         />
 
+
         {/* <TextInput
+
 	label='Name'
 	testID="input"
 	mode="outlined"
@@ -82,6 +86,7 @@ export default function AccountProfileModule() {
 }
 
 const styles = StyleSheet.create({
+
   container: {
     flex: 1,
     backgroundColor: "lightcyan",
@@ -113,6 +118,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     overflow: "hidden",
   },
+
 
   input: {
     height: 40,

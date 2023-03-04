@@ -183,8 +183,10 @@ function MyTabsNavigator() {
       />
 
   
+
     </Tab.Navigator>
   );
+
 }
 const style = StyleSheet.create({
   shadow: {

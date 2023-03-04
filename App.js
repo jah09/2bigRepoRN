@@ -25,6 +25,7 @@ export default function App() {
   if (!fontLoaded) {
     return <AppLoading />;
   }
+  
 
   return (
     <NavigationContainer>
@@ -57,6 +58,7 @@ export default function App() {
         />
         <Stack.Screen name="OrderScreen" component={OrderModule} />
       </Stack.Navigator>
+
     </NavigationContainer>
   );
 }
