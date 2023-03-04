@@ -38,18 +38,6 @@ export default function LoginModule({ navigation, text }) {
     auth.createUserWithEmailAndPass(email, password);
   };
 
-  // const [fontLoaded]=useFonts({
-
-  //   'nunito-bold':require('../assets/fonts/Nunito-Bold.ttf'),
-  //   'nunito-light':require('../assets/fonts/Nunito-Light.ttf'),
-  //   'nunito-medium':require('../assets/fonts/Nunito-Medium.ttf'),
-  //   'nunito-semibold':require('../assets/fonts/Nunito-SemiBold.ttf'),
-  //   'nunito-regular':require('../assets/fonts/Nunito-Regular.ttf')
-
-  // });
-  // if(!fontLoaded){
-  //   return <AppLoading/>
-  // }
 
   return (
     <SafeAreaView style={globalStyles.safeviewStyle}>
@@ -77,12 +65,12 @@ export default function LoginModule({ navigation, text }) {
                   color="black"
                   style={globalStyles.login_Email_Icon}
                 />
-
-                <TextInput
+                {/* <TextInput
                   placeholder="Email"
                   placeholderTextColor="black"
                   style={globalStyles.login_Email_textInput}
-                />
+                /> */}
+                
               </View>
 
               {/* wrapper for password input */}
