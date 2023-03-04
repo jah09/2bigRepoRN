@@ -38,10 +38,7 @@ function MyTabsNavigator() {
       >
         <Stack.Screen name="Stations" component={StationModule} />
         <Stack.Screen name="Product" component={ProductComponent} />
-        <Stack.Screen
-          name="ProductDetails"
-          component={ProductDetailsComponent}
-        />
+        <Stack.Screen name="ProductDetails"component={ProductDetailsComponent}/>
       </Stack.Navigator>
     );
   }
@@ -83,7 +80,7 @@ function MyTabsNavigator() {
 
   return (
     <Tab.Navigator
-      initialRouteName="Station"
+      initialRouteName="Profile"
       independent={true}
       tabBarVisible={true}
       screenOptions={({ route }) => ({
