@@ -53,7 +53,7 @@ export default function LoginModule({ navigation, text }) {
               source={require("../assets/logo_dic.png")}
               style={globalStyles.imageStyle}
             />
-            <Text style={globalStyles.textStyles}>Meet the expectations. </Text>
+            <Text style={globalStyles.textStyles}>Meets the expectation. </Text>
 
             {/* wrapper/div for email and password input */}
             <View style={globalStyles.wrapper}>
@@ -65,11 +65,11 @@ export default function LoginModule({ navigation, text }) {
                   color="black"
                   style={globalStyles.login_Email_Icon}
                 />
-                {/* <TextInput
+                <TextInput
                   placeholder="Email"
                   placeholderTextColor="black"
                   style={globalStyles.login_Email_textInput}
-                /> */}
+                />
                 
               </View>
 

@@ -1,29 +1,23 @@
-// // Import the functions you need from the SDKs you need
-// import { initializeApp } from "firebase/app";
-// //import { getAnalytics } from "firebase/analytics";
-// import { getAuth } from "firebase/auth"
-// // TODO: Add SDKs for Firebase products that you want to use
-// // https://firebase.google.com/docs/web/setup#available-libraries
+//importing functions from the SDK
+import { initializeApp } from "firebase/app";
+import { getDatabase } from "firebase/database";
+import { getAuth } from "firebase/auth";
 
-// // Your web app's Firebase configuration
-// // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-// const firebaseConfig = {
-//   apiKey: "AIzaSyC3EK1x68TgLdB7wIgpQ9bssBU4jnN7EVs",
-//   authDomain: "big-system-64b55.firebaseapp.com",
-//   databaseURL: "https://big-system-64b55-default-rtdb.firebaseio.com",
-//   projectId: "big-system-64b55",
-//   storageBucket: "big-system-64b55.appspot.com",
-//   messagingSenderId: "668337844782",
-//   appId: "1:668337844782:web:d75ae6097870e21efaa5bf",
-//   measurementId: "G-CM4WSEQJWE"
-// };
+const firebaseConfig = {
+  // Firebase configuration
+  apiKey: "AIzaSyC3EK1x68TgLdB7wIgpQ9bssBU4jnN7EVs",
+  authDomain: "big-system-64b55.firebaseapp.com",
+  databaseURL: "https://big-system-64b55-default-rtdb.firebaseio.com",
+  projectId: "big-system-64b55",
+  storageBucket: "big-system-64b55.appspot.com",
+  messagingSenderId: "668337844782",
+  appId: "1:668337844782:web:d75ae6097870e21efaa5bf",
+  measurementId: "G-CM4WSEQJWE",
+};
 
-// // Initialize Firebase
+//initialize firebase
+const app = initializeApp(firebaseConfig);
 
-// const app = initializeApp(firebaseConfig);
-
-
-// export const auth =getAuth(app);
-// //const analytics = getAnalytics(app);
-
-//<Image style = {styles.profileImage} source = {require('../assets/Vitae.png')} styles= {styles .image} resizeMode ="center"/>
+//exporting database from firebase
+export const db = getDatabase(app);
+export const auth = getAuth(app);

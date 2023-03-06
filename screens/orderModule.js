@@ -3,7 +3,6 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Alert,
   Modal,
   TextInput,
 } from "react-native";
@@ -12,7 +11,10 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useRoute } from "@react-navigation/native";
+import CustomBtn from "../shared/customButton";
 import { globalStyles } from "../ForStyle/GlobalStyles";
+import { ref, onValue, push, set } from "firebase/database";
+import { db } from "../firebaseConfig";
 
 export default function ProductComponent() {
   // const route = useRoute();
@@ -36,6 +38,93 @@ export default function ProductComponent() {
   const onPressHandlerShowModal = () => {
     setShowModal(true);
   };
+
+  //Initialization of the variable using the useState hook
+  //for fetching the ORDER details
+  const [orderProductType, setOrderProductType] = useState("");
+  const [orderType, setOrderType] = useState("");
+  const [orderFrom_store, setStorename] = useState("");
+  const [orderPrice, setOrderPrice] = useState("");
+  const [orderQuantity, setQuantity] = useState("");
+  const [orderDeliveryType, setDeliveryType] = useState("");
+  const [order_CUSTOMERID, setCustomerId] = useState("");
+  const [orderTotalAmount, setTotalAmount] = useState("");
+  const [orderDateTime, setOrdertime] = useState("");
+  const [OrderStatus, setOrderStatus] = useState("");
+  const [OrderReservationDate, setReservationDate] = useState("");
+  const [orderID, setOrderId] = useState("");
+
+  useEffect(() => {
+    onValue(
+      ref(db, "/ORDER"),
+      (querySnapShot) => {
+        let orders = querySnapShot.val();
+        if (orders) {
+          for (const orderID in orders) {
+            const order = orders[orderID];
+            if (order.orderID === orderID) {
+              setOrderProductType(order.OrderProductType);
+              setOrderType(order.orderType);
+              setStorename(order.orderFrom_store);
+              setOrderPrice(order.orderPrice);
+              setQuantity(order.orderQuantity);
+              setDeliveryType(order.orderDeliveryType);
+              setCustomerId(order.order_CUSTOMERID);
+              setTotalAmount(order.orderTotalAmount);
+              setOrdertime(order.orderDateTime);
+              setOrderStatus(order.OrderStatus);
+              setReservationDate(order.OrderReservationDate);
+              setOrderId(order.orderID);
+              console.log("Order data", order);
+              break;
+            }
+          }
+        } else {
+          console.log("No data found");
+        }
+      },
+      (error) => {
+        console.log(error.message);
+      }
+    );
+  }, []);
+
+  //function for received order
+  function received() {
+    //saving data to a defined path/table
+    set(ref(db, "ADMINNOTIFICATION"), {
+      OrderStatus: "order received",
+    }).then(() => {
+      //Customer data saved successfully
+      alert("Thank you for ordering!");
+      console.log("successfully registered!");
+    });
+    // .catch((error) => {
+    // .catch(() => {
+    //   // Error saving data
+    //   alert("Error submitting data!");
+    // });
+  }
+
+  //Initialization of the variable using the useState hook
+  //for creating a new entry in the REVIEWS_RATINGS tbl
+  //database every time a new review is submitted
+  const [review, setReview] = useState("");
+  const [rating, setRating] = useState("");
+
+  //function for received order
+  function sendReviews() {
+    const reviews = review;
+    const ratings = rating;
+    const reviewRef = ref(db, "REVIEWS_RATINGS");
+    push(reviewRef, { reviews, ratings });
+    setShowModal(false);
+
+    //Reviews saved successfully
+    alert("Thank you for your ratings and feedback!");
+    console.log("successfully registered!");
+  }
+
   return (
     <View style={styles.container}>
       <Modal
@@ -105,6 +194,8 @@ export default function ProductComponent() {
                   placeholderTextColor="black"
                   style={globalStyles.login_Email_textInput}
                   keyboardType="default"
+                  value={review}
+                  onChangeText={(value) => setReview(value)}
                 />
               </View>
 
@@ -122,58 +213,19 @@ export default function ProductComponent() {
                   placeholderTextColor="black"
                   style={globalStyles.login_Email_textInput}
                   keyboardType="numeric"
+                  value={rating}
+                  onChangeText={(value) => setRating(value)}
                 />
               </View>
-             
-            </View>
-             {/*for custom Submit button */}
-            <View
-              style={{
-                backgroundColor: "transparent",
-                marginTop: 20,
-                height: 50,
-              }}
-            >
-              <TouchableOpacity >
-                <View
-                  style={{
-                    borderRadius: 10,
-                    paddingVertical: 10,
-                    paddingHorizontal: 10,
-                    backgroundColor: "#87cefa",
-                    marginTop: 5,
-                    width: 200,
-                    left: 50,
-                    height: 40,
-                  }}
-                >
-                  <Text
-                    style={[globalStyles.buttonText, { marginTop: 0, left: 0 }]}
-                  >
-                    Submit
-                  </Text>
-                  <MaterialIcons
-                    name="login"
-                    size={24}
-                    color="black"
-                    style={[
-                      globalStyles.loginIcon,
-                      { backgroundColor: "transparent", marginLeft: -70 },
-                    ]}
-                  />
-                </View>
-              </TouchableOpacity>
+              {/*for custom Submit button */}
+              <View style={styles.reviewsBtnStyle}>
+                <CustomBtn onPress={sendReviews} text="Submit" />
+              </View>
             </View>
           </View>
         </View>
       </Modal>
       <View style={styles.viewBackBtn}>
-        {/* <MaterialIcons
-          name="arrow-back-ios"
-          size={24}
-          color="black"
-          onPress={onPresshandler_toStationPage}
-        /> */}
         <View style={styles.viewwatername}>
           <Text style={styles.textwatername}>Order Details</Text>
         </View>
@@ -181,26 +233,20 @@ export default function ProductComponent() {
       <View style={styles.productWrapper}>
         <View style={styles.wrapperWaterProduct}>
           <View style={styles.viewWaterItem}>
-            {/*Name of the store */}
-            <Text style={styles.productNameStyle}>
-              {route.params?.storeName || "No Store name to display"}
-            </Text>
-
-            {/* Product template and its value  */}
             <View
               style={{
-                // backgroundColor: "green",
                 flexDirection: "row",
                 alignItems: "flex-end",
+                marginTop: 10,
               }}
             >
               <Text
                 style={{
-                  fontFamily: "nunito-semibold",
+                  fontFamily: "nunito-bold",
                   fontSize: 15,
                 }}
               >
-                Product Name Template
+                Store Name:
               </Text>
               <Text
                 style={{
@@ -210,181 +256,10 @@ export default function ProductComponent() {
                   flex: 1,
                 }}
               >
-                Prodname value
+                {orderFrom_store}
               </Text>
             </View>
-            {/*delivery type  template and its value */}
-            <View
-              style={{
-                // backgroundColor: "red",
-                flexDirection: "row",
-                alignItems: "flex-end",
-              }}
-            >
-              <Text
-                style={{
-                  fontFamily: "nunito-semibold",
-                  fontSize: 15,
-                  marginTop: 5,
-                }}
-              >
-                Delivery Type Template
-              </Text>
-              <Text
-                style={{
-                  fontFamily: "nunito-semibold",
-                  fontSize: 15,
-                  textAlign: "right",
-                  flex: 1,
-                }}
-              >
-                Delivery value
-              </Text>
-            </View>
-            {/*order  template and its value */}
-            <View
-              style={{
-                //  backgroundColor: "coral",
-                flexDirection: "row",
-                alignItems: "flex-end",
-              }}
-            >
-              <Text
-                style={{
-                  fontFamily: "nunito-semibold",
-                  fontSize: 15,
-                  marginTop: 5,
-                }}
-              >
-                Order Type Template
-              </Text>
-              <Text
-                style={{
-                  fontFamily: "nunito-semibold",
-                  fontSize: 15,
-                  textAlign: "right",
-                  flex: 1,
-                }}
-              >
-                ordertype value
-              </Text>
-            </View>
-
-            {/*reservation  template and its value */}
-            <View
-              style={{
-                //  backgroundColor: "blue",
-                flexDirection: "row",
-                alignItems: "flex-end",
-              }}
-            >
-              <Text
-                style={{
-                  fontFamily: "nunito-semibold",
-                  fontSize: 15,
-                  marginTop: 5,
-                }}
-              >
-                Reservation Date
-              </Text>
-              <Text
-                style={{
-                  fontFamily: "nunito-semibold",
-                  fontSize: 15,
-                  textAlign: "right",
-                  flex: 1,
-                }}
-              >
-                ReserveDate value
-              </Text>
-            </View>
-            {/*Borrow gallon types  template and its value */}
-            <View
-              style={{
-                // backgroundColor: "red",
-                flexDirection: "row",
-                alignItems: "flex-end",
-              }}
-            >
-              <Text
-                style={{
-                  fontFamily: "nunito-semibold",
-                  fontSize: 15,
-                  marginTop: 5,
-                }}
-              >
-                Borrow Gallon Type
-              </Text>
-              <Text
-                style={{
-                  fontFamily: "nunito-semibold",
-                  fontSize: 15,
-                  textAlign: "right",
-                  flex: 1,
-                }}
-              >
-                BorrowgalVal
-              </Text>
-            </View>
-
-            {/*product  template and its value */}
-            <View
-              style={{
-                // backgroundColor: "brown",
-                flexDirection: "row",
-                alignItems: "flex-end",
-              }}
-            >
-              <Text
-                style={{
-                  fontFamily: "nunito-semibold",
-                  fontSize: 15,
-                  marginTop: 5,
-                }}
-              >
-                Product price
-              </Text>
-              <Text
-                style={{
-                  fontFamily: "nunito-semibold",
-                  fontSize: 15,
-                  textAlign: "right",
-                  flex: 1,
-                }}
-              >
-                value x qty
-              </Text>
-            </View>
-
-            {/*status  template and its value */}
-            <View
-              style={{
-                // backgroundColor: "brown",
-                flexDirection: "row",
-                alignItems: "flex-end",
-              }}
-            >
-              <Text
-                style={{
-                  fontFamily: "nunito-semibold",
-                  fontSize: 15,
-                  marginTop: 5,
-                }}
-              >
-                Status
-              </Text>
-              <Text
-                style={{
-                  fontFamily: "nunito-semibold",
-                  fontSize: 15,
-                  textAlign: "right",
-                  flex: 1,
-                }}
-              >
-                Status Value
-              </Text>
-            </View>
-
+            {/* border line  */}
             <View
               style={{
                 borderBottomWidth: 0.5,
@@ -394,7 +269,274 @@ export default function ProductComponent() {
             ></View>
             <View
               style={{
-                // backgroundColor: "brown",
+                flexDirection: "row",
+                alignItems: "flex-end",
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "nunito-bold",
+                  fontSize: 15,
+                  marginTop: 5,
+                }}
+              >
+                Order ID:
+              </Text>
+              <Text
+                style={{
+                  fontFamily: "nunito-semibold",
+                  fontSize: 15,
+                  textAlign: "right",
+                  flex: 1,
+                }}
+              >
+                {orderID}
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "flex-end",
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "nunito-bold",
+                  fontSize: 15,
+                  marginTop: 5,
+                }}
+              >
+                Customer ID:
+              </Text>
+              <Text
+                style={{
+                  fontFamily: "nunito-semibold",
+                  fontSize: 15,
+                  textAlign: "right",
+                  flex: 1,
+                }}
+              >
+                {order_CUSTOMERID}
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "flex-end",
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "nunito-bold",
+                  fontSize: 15,
+                  marginTop: 5,
+                }}
+              >
+                Product Name:
+              </Text>
+              <Text
+                style={{
+                  fontFamily: "nunito-semibold",
+                  fontSize: 15,
+                  textAlign: "right",
+                  flex: 1,
+                }}
+              >
+                {orderProductType}
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "flex-end",
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "nunito-bold",
+                  fontSize: 15,
+                  marginTop: 5,
+                }}
+              >
+                Order Type:
+              </Text>
+              <Text
+                style={{
+                  fontFamily: "nunito-semibold",
+                  fontSize: 15,
+                  textAlign: "right",
+                  flex: 1,
+                }}
+              >
+                {orderType}
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "flex-end",
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "nunito-bold",
+                  fontSize: 15,
+                  marginTop: 5,
+                }}
+              >
+                Price:
+              </Text>
+              <Text
+                style={{
+                  fontFamily: "nunito-semibold",
+                  fontSize: 15,
+                  textAlign: "right",
+                  flex: 1,
+                }}
+              >
+                {orderPrice}
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "flex-end",
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "nunito-bold",
+                  fontSize: 15,
+                  marginTop: 5,
+                }}
+              >
+                Quantity:
+              </Text>
+              <Text
+                style={{
+                  fontFamily: "nunito-semibold",
+                  fontSize: 15,
+                  textAlign: "right",
+                  flex: 1,
+                }}
+              >
+                {orderQuantity}
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "flex-end",
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "nunito-bold",
+                  fontSize: 15,
+                  marginTop: 5,
+                }}
+              >
+                Delivery Type:
+              </Text>
+              <Text
+                style={{
+                  fontFamily: "nunito-semibold",
+                  fontSize: 15,
+                  textAlign: "right",
+                  flex: 1,
+                }}
+              >
+                {orderDeliveryType}
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "flex-end",
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "nunito-bold",
+                  fontSize: 15,
+                  marginTop: 5,
+                }}
+              >
+                Date of Order:
+              </Text>
+              <Text
+                style={{
+                  fontFamily: "nunito-semibold",
+                  fontSize: 15,
+                  textAlign: "right",
+                  flex: 1,
+                }}
+              >
+                {orderDateTime}
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "flex-end",
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "nunito-bold",
+                  fontSize: 15,
+                  marginTop: 5,
+                }}
+              >
+                Order Status:
+              </Text>
+              <Text
+                style={{
+                  fontFamily: "nunito-semibold",
+                  fontSize: 15,
+                  textAlign: "right",
+                  flex: 1,
+                }}
+              >
+                {OrderStatus}
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "flex-end",
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "nunito-bold",
+                  fontSize: 15,
+                  marginTop: 5,
+                }}
+              >
+                Reservation Date:
+              </Text>
+              <Text
+                style={{
+                  fontFamily: "nunito-semibold",
+                  fontSize: 15,
+                  textAlign: "right",
+                  flex: 1,
+                }}
+              >
+                {OrderReservationDate}
+              </Text>
+            </View>
+            {/* border line  */}
+            <View
+              style={{
+                borderBottomWidth: 0.5,
+                borderColor: "gray",
+                marginTop: 10,
+              }}
+            ></View>
+            <View
+              style={{
                 flexDirection: "row",
                 alignItems: "flex-end",
               }}
@@ -416,8 +558,12 @@ export default function ProductComponent() {
                   flex: 1,
                 }}
               >
-                Total Value
+                {orderTotalAmount}
               </Text>
+            </View>
+            {/* Button for submitting the received order */}
+            <View style={styles.customBtnStyle}>
+              <CustomBtn onPress={received} text="Order Received" />
             </View>
 
             <View
@@ -425,70 +571,21 @@ export default function ProductComponent() {
                 backgroundColor: "transparent",
                 height: 50,
                 flexDirection: "row",
-                justifyContent:'flex-end',
+                justifyContent: "flex-end",
               }}
             >
               <TouchableOpacity onPress={onPressHandlerShowModal}>
                 <View
                   style={{
-                   // backgroundColor: "red",
                     marginTop: 15,
-                    height: 25,
-                    borderRadius: 5,
-                    padding: 4,
-                    flexDirection: "row",
-                    width: 30,
-                    height:30,
                     justifyContent: "center",
-                    marginLeft: 85,
-                    marginRight: 5,
-                   // elevation: 4,
-                    alignItems:'center'
+                    marginRight: 150,
+                    flexDirection: "row",
+                    alignItems: "center",
                   }}
                 >
-                  {/* <Text style={{ fontFamily: "nunito-semibold" }}>
-                    Feedback
-                  </Text> */}
-                  <MaterialIcons name="feedback" size={24} color="black" />
-                </View>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={() => {
-                  Alert.alert("Confirmation", "Order received?", [
-                    {
-                      text: "Not yet",
-                      onPress: () => {
-                        console.log("not yet pressed!");
-                      },
-                    },
-                    {
-                      text: "Yes",
-                      onPress: () => {
-                        console.log("Yes pressed!");
-                      },
-                    },
-                  ]);
-                }}
-              >
-                <View
-                  style={{
-                  //  backgroundColor: "red",
-                    marginTop: 15,
-                    height: 25,
-                    //borderRadius: 5,
-                    padding: 4,
-                    flexDirection: "row",
-                    width: 30,
-                    justifyContent: "center",
-                    marginRight:1,
-                   height:30,
-                  }}
-                >
-                  {/* <Text style={{ fontFamily: "nunito-semibold" }}>
-                    Received
-                  </Text> */}
-                  <MaterialIcons name="done" size={24} color="black" style={{marginBottom:-10}}/>
+                  <MaterialIcons name="feedback" size={34} color="black" />
+                  <Text style={{ marginLeft: 10 }}>Give Rate and Reviews</Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -518,7 +615,7 @@ const styles = StyleSheet.create({
     //backgroundColor: "yellowgreen",
     padding: 10,
     flex: 1,
-    marginTop: 20,
+    marginTop: 10,
   },
   viewwatername: {
     // backgroundColor: "red",
@@ -529,18 +626,20 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: "nunito-bold",
     fontWeight: "bold",
+    marginTop: 25,
   },
   wrapperWaterProduct: {
     // backgroundColor: "red",
     height: 300,
   },
-
+  // customBtnStyle: {
+  //   marginTop: -3,
+  // },
   viewWaterItem: {
     backgroundColor: "white",
     padding: 3,
-
     width: "100%",
-    height: 250,
+    height: 400,
     marginLeft: 0,
     borderRadius: 10,
     marginRight: 5,
@@ -560,7 +659,7 @@ const styles = StyleSheet.create({
   },
   FeedbackModal: {
     width: 300,
-    height: 250,
+    height: 300,
     backgroundColor: "#F8E2CF",
     borderBottomColor: "gray",
     borderBottomWidth: 1,
@@ -577,7 +676,7 @@ const styles = StyleSheet.create({
     // backgroundColor: "green",
     paddingVertical: 5,
     marginTop: 10,
-    height: 120,
+    height: 400,
   },
   reviewInputStyle: {
     flexDirection: "row",
@@ -594,9 +693,12 @@ const styles = StyleSheet.create({
     borderBottomColor: "black",
     borderBottomWidth: 1,
     paddingBottom: 2,
-    marginBottom: 5,
+    //marginBottom: 5,
     width: 270,
-    marginTop: 10,
+    marginTop: 30,
     marginLeft: 20,
+  },
+  reviewsBtnStyle: {
+    marginBottom: 20,
   },
 });
