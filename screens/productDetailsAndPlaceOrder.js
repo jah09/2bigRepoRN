@@ -13,10 +13,10 @@ import CheckBox from "expo-checkbox";
 import React, { useState, useEffect } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
-import CustomButton from "../../shared/customButton";
+// import CustomButton from "../shared/customButton";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useRoute } from "@react-navigation/native";
-import { globalStyles } from "../../ForStyle/GlobalStyles";
+import { globalStyles } from "../ForStyle/GlobalStyles";
 export default function ProductDetailsAndPlaceOrder({ navigation }) {
   const route = useRoute();
   const { storeName, item } = route.params;
@@ -202,7 +202,7 @@ export default function ProductDetailsAndPlaceOrder({ navigation }) {
                   {/* <MaterialCommunityIcons name="plus" size={24} color="black" /> */}
                   <TouchableOpacity onPress={handleIncrement}>
                     <Image
-                      source={require("../../assets/plusIcon.png")}
+                      source={require("../assets/plusIcon.png")}
                       style={{ width: 20, height: 20 }}
                     />
                   </TouchableOpacity>
@@ -218,7 +218,7 @@ export default function ProductDetailsAndPlaceOrder({ navigation }) {
                 >
                   <TouchableOpacity onPress={handleDecrement}>
                     <Image
-                      source={require("../../assets/minus-math.png")}
+                      source={require("../assets/minus-math.png")}
                       style={{ width: 20, height: 20 }}
                     />
                   </TouchableOpacity>

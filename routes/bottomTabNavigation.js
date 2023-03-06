@@ -4,8 +4,8 @@ import StationModule from "../screens/stationModule";
 import MapModule from "../screens/mapModule";
 import NotificationModule from "../screens/notificationModule";
 import ProfileModule from "../screens/accountProfileModule";
-import ProductComponent from "../screens/productScreens/productComponent";
-import ProductDetailsComponent from "../screens/productScreens/productDetailsAndPlaceOrder";
+import ProductComponent from "../screens/productComponent";
+import ProductDetailsComponent from "../screens/productDetailsAndPlaceOrder";
 import notificationModule from "../screens/notificationModule";
 import { FontAwesome } from "@expo/vector-icons";
 

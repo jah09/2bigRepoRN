@@ -29,20 +29,20 @@ export default function ProductComponent() {
       key: 1,
       watername: "Alkaline",
       waterPrice: 30.0,
-      waterImage: require("../../assets/alkalineWater.jpg"),
+      waterImage: require("../assets/alkalineWater.jpg"),
     },
     {
       key: 2,
       watername: "Mineral",
       waterPrice: 20.0,
-      waterImage: require("../../assets/mineralWater.jpg"),
+      waterImage: require("../assets/mineralWater.jpg"),
     },
 
     {
       key: 3,
       watername: "Tubig Kanal",
       waterPrice: 10.0,
-      waterImage: require("../../assets/Vitae.png"),
+      waterImage: require("../assets/Vitae.png"),
     },
   ]);
 
@@ -111,7 +111,7 @@ export default function ProductComponent() {
             </Text>
             <View style={styles.otherProductcontainer}>
               <Text style={{justifyContent:'center', alignItems:'center',textAlign:'center',fontWeight:"bold"}}>
-                TALAGA BA SHARMAINE? ITO KA PAKYO KA
+                TECHNIQUE,,,, AJA!!!
               </Text>
             </View>
           </View>
