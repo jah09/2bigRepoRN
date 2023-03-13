@@ -11,9 +11,9 @@ import CreateAccountModule from "../screens/createAccountModule";
 import ForgotPassword from "../screens/forgotPasswordModule";
 import BottomTabNavigator from "../routes/bottomTabNavigation";
 import OrderStackNagivation from "../routes/otherNavigator";
-import ProductScreens from "../screens/productScreens/productComponent";
-import ProductDetailAndPlaceOrder from "../screens/productScreens/productDetailsAndPlaceOrder";
-
+import ProductScreens from '../screens/productComponent';
+import ProductDetailAndPlaceOrder from '../screens/productDetailsAndPlaceOrder';
+import DeadEndPage from '../screens/deadEndScreen';
 const Stack = createNativeStackNavigator();
 
 export default function HomeStack() {
@@ -59,6 +59,7 @@ export default function HomeStack() {
               component={ProductDetailAndPlaceOrder}
             />
             <Stack.Screen name="OrderScreen" component={OrderModule} />
+            <Stack.Screen name="DeadEndPage" component={DeadEndPage}/>
           </Stack.Navigator>
     
         </NavigationContainer>

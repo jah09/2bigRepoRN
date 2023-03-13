@@ -2,8 +2,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginModule from "../screens/loginModule";
 import ForgotPasswordModule from "../screens/forgotPasswordModule";
 import SignUpModule from "../screens/createAccountModule";
-import Products from "../screens/productScreens/productComponent";
-import ProductsDetails from "../screens/productScreens/productDetailsAndPlaceOrder";
+
 const Stack = createNativeStackNavigator();
 export default function OtherNavigation() {
   return (

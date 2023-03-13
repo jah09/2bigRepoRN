@@ -13,9 +13,16 @@ import { useNavigation } from "@react-navigation/native";
 import { useRoute } from "@react-navigation/native";
 export default function ProductComponent() {
   const route = useRoute();
-  const { storeName } = route.params.storeName;
-  console.log("receving-2nd--" + route.params.storeName);
+ // const { storeName } = route.params.storeName;
+//  console.log("receving-2nd--" + route.params.storeName);
   //console.log(storeName);
+
+  //pag received the object from previous screen
+  const {item}=route.params;
+//  console.log(JSON.stringify(item));
+  const passedStoreName=item.StoreName; // ge store sa variable ang previous passed object from station screen
+ 
+//  console.log("2nd Screen Test-- Received--"+item.StoreName);  //pag test if successfully passed ba ang OBJECT.
   const navigation = useNavigation();
   const onPresshandler_toStationPage = () => {
     navigation.goBack();
@@ -29,20 +36,20 @@ export default function ProductComponent() {
       key: 1,
       watername: "Alkaline",
       waterPrice: 30.0,
-      waterImage: require("../../assets/alkalineWater.jpg"),
+      waterImage: require("../assets/alkalineWater.jpg"),
     },
     {
       key: 2,
       watername: "Mineral",
       waterPrice: 20.0,
-      waterImage: require("../../assets/mineralWater.jpg"),
+      waterImage: require("../assets/mineralWater.jpg"),
     },
 
     {
       key: 3,
       watername: "Tubig Kanal",
       waterPrice: 10.0,
-      waterImage: require("../../assets/Vitae.png"),
+      waterImage: require("../assets/Vitae.png"),
     },
   ]);
 
@@ -57,10 +64,16 @@ export default function ProductComponent() {
             onPress={onPresshandler_toStationPage}
           />
           <View style={styles.viewwatername}>
-            <Text style={styles.textwatername}>{route.params.storeName}</Text>
+            <Text style={styles.textwatername}>{passedStoreName}</Text>
           </View>
         </View>
         <View style={styles.productWrapper}>
+          <View style={{padding:5,backgroundColor:'whitesmoke',borderRadius:10,elevation:4,paddingHorizontal:10,marginBottom:25}}>
+            <Text style={{fontSize:16,fontFamily:'nunito-semibold'}}>
+              {"To our beloved customer!\nWe don't accept refill for today's transaction. "}
+
+            </Text>
+          </View>
           <View style={styles.wrapperWaterProduct}>
             <Text style={styles.waterProdStyle}>Water Product</Text>
 
@@ -76,15 +89,10 @@ export default function ProductComponent() {
                 <TouchableOpacity
                   activeOpacity={0.5}
                   onPress={() => {
-                    navigation.navigate("ProductDetailsAndOrders", {
-                      storeName: route.params.storeName,
-                      item: item,
-                    });
-                    console.log(
-                      "sendingTest---2nd Screen---" +
-                        route.params.storeName +
-                        item.watername
-                    );
+                    navigation.navigate("ProductDetailsAndOrders", {  item, storeName:passedStoreName });
+                    // console.log('Sending Product screen', passedStoreName);
+                  
+                  
                   }}
                 >
                   {/* ProductDetailsAndOrder*/}
@@ -105,13 +113,14 @@ export default function ProductComponent() {
             />
           </View>
 
+          
           <View style={styles.otherProductStyle}>
             <Text style={styles.otherProductLabelStyle}>
               Other Product Goes here
             </Text>
             <View style={styles.otherProductcontainer}>
-              <Text style={{justifyContent:'center', alignItems:'center',textAlign:'center',fontWeight:"bold"}}>
-                TALAGA BA SHARMAINE? ITO KA PAKYO KA
+              <Text style={{justifyContent:'center', alignItems:'center',textAlign:'center',fontWeight:'500'}}>
+                Other Product goes here. Template only!
               </Text>
             </View>
           </View>
@@ -137,7 +146,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   productWrapper: {
-  //  backgroundColor: "yellowgreen",
+   // backgroundColor: "yellowgreen",
     padding: 10,
     flex: 1,
     marginTop: 20,

@@ -42,7 +42,7 @@ import React from 'react';
 //   }, 2000);
 // }, []);
 
-export default function notificationModule() {
+export default function NotificationModule() {
   return (
 
     <View style={{alignItems:'center',right:30}}>

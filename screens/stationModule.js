@@ -7,9 +7,31 @@ import {
   Image,
   StatusBar,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { db } from "../firebaseConfig";
+import { ref, onValue } from "firebase/database";
 export default function StationModule() {
+  const [storeInformation, setstoreInformation] = useState();
+  useEffect(() => {
+    const storeRef = ref(db, "STOREINFO/");
+    onValue(storeRef, (snapshot) => {
+     // const storePic=snapshot.val();
+      const data = snapshot.val();
+      const newStoreInfo = Object.keys(data).map((key) => ({
+        id: key,
+        StoreImage:data[key].StoreImage,
+        ...data[key],
+          
+      }
+      ) );
+    
+     // console.log(newStoreInfo); //test if successfully fetch the datas in STOREINFORMATION
+      setstoreInformation(newStoreInfo);
+    });
+  },[]);
+
+//this object with array ,is wala na nagamit but ready to delete na.
   const [storeInfo, setstoreInfo] = useState([
     {
       id: 1,
@@ -50,11 +72,13 @@ export default function StationModule() {
     {
       id: 6,
       storeName: "Pet Station",
-      storeStatus: "Cose",
+      storeStatus: "Close",
       storeDistance: "100m",
       storePhoto: require("../assets/storeNoBG.png"),
     },
   ]);
+
+
   const styleTypes = ["default", "dark-content", "light-content"];
   const [visibleStatusBar, setvisibleStatusbar] = useState(false);
   const [styleStatusBar, setstyleStatusBar] = useState(styleTypes[0]);
@@ -70,36 +94,38 @@ export default function StationModule() {
     <View style={styles.container}>
       <FlatList
         keyExtractor={(item) => item.id}
-        data={storeInfo}
+        data={storeInformation}
         renderItem={({ item }) => (
           <View style={styles.container}>
             <View style={styles.storeWrapper}>
               <TouchableOpacity
                 activeOpacity={0.5}
                 onPress={() => {
-                  console.log("sending--1st screen-" + item.storeName);
-                  navigation.navigate("Products", {
-                    storeName: item.storeName,
-                  });
+                  // console.log("sending--1st screen-" + item.storeName);
+                  //logged if na pasa ba ang whole object when tapped
+                  //console.log('Test to send--from Station Screen ----'+JSON.stringify(item));
+                  navigation.navigate("Products",{item });
+
                 }}
               >
                 <View style={styles.item}>
                   <View style={styles.itemLeft}>
                     <View style={styles.square}>
                       <Image
-                        source={item.storePhoto}
+                         source={{uri:item.StoreImage}}
+                        
                         style={styles.storePhotoStyle}
                       />
                     </View>
                     <View>
                       <Text style={styles.storeNameStyles}>
-                        {item.storeName}
+                        {item.StoreName}
                       </Text>
                       <Text style={styles.storeStatusStyles}>
-                        {item.storeStatus}
+                        {item.StoreStatus}
                       </Text>
                       <Text style={styles.storeStatusStyles}>
-                        {item.storeDistance}
+                        {item.StoreDistance}
                       </Text>
                     </View>
                   </View>
@@ -174,12 +200,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   square: {
-    width: 50,
+    width: 55,
     height: 55,
-    backgroundColor: "#55BCF6",
-    // opacity: 0.4,
+  //  backgroundColor: "red",
+    // opacity: 0.4, #55BCF6
     borderRadius: 15,
-    marginRight: 15,
+    marginRight: 10,
+    borderWidth:1,
+    borderColor:'#55BCF6'
   },
   itemText: {
     maxWidth: "80%",
@@ -207,8 +235,13 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   storePhotoStyle: {
-    width: 50,
-    height: 50,
+    width: 53,
+    height: 53,
+    borderTopLeftRadius:15,
+    borderTopRightRadius:15,
+    borderBottomLeftRadius:15,
+    borderBottomRightRadius:15,
+    
   },
   storeNameStyles: {
     fontSize: 20,
