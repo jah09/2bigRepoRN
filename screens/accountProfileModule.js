@@ -12,15 +12,19 @@ import {
   TouchableOpacity,
   onPress,
   Modal,
+  Alert,
 } from "react-native";
-import React, { useState } from "react";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import React, { useEffect, useState } from "react";
+import {
+  Ionicons,
+  MaterialIcons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import CustomInput from "../shared/customInput";
-import { Button } from "react-native-paper";
-import { globalStyles } from "../ForStyle/GlobalStyles";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-
-export default function AccountProfileModule() {
+import { db, getDatabase } from "../firebaseConfig";
+import { ref, orderByChild, query, equalTo, onValue } from "firebase/database";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+export default function AccountProfileModule({ navigation }) {
   const [text, onChangeText] = React.useState("");
   const [number, onChangeNumber] = React.useState("");
 
@@ -31,6 +35,42 @@ export default function AccountProfileModule() {
   const [showModal, setShowModal] = useState(false);
   const onPressHandlerShowModal = () => {
     setShowModal(true);
+  };
+
+  const [customerData, setCustomerData] = useState(null);
+  console.log("profile screen", customerData);
+
+  useEffect(() => {
+    AsyncStorage.getItem("customerData")
+      .then((data) => {
+        if (data !== null) {
+          setCustomerData(JSON.parse(data));
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        alert("Error fetching data: ", error);
+      });
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.multiRemove(["customerData", "email", "password"]);
+      // navigate to login screen or any other screen
+      Alert.alert("", "Do you want to logout?", [
+        {
+          text: "Yes",
+          onPress: () => {
+            navigation.navigate("Login");
+          },
+        },
+        {
+          text: "cancel",
+        },
+      ]);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -121,6 +161,101 @@ export default function AccountProfileModule() {
         </View>
       </Modal>
       <ScrollView showsVerticalScrollIndicator={false}>
+        <Modal
+          transparent
+          onRequestClose={() => {
+            setShowModal(false);
+          }}
+          visible={showModal}
+        >
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "#00000099",
+            }}
+          >
+            <View style={styles.RewardModal}>
+              <View style={styles.modalTitle}>
+                <Text
+                  style={{
+                    marginTop: 8,
+                    marginLeft: 45,
+                    fontFamily: "nunito-bold",
+                    fontSize: 22,
+                  }}
+                >
+                  2Big Loyalty
+                </Text>
+                <View
+                  style={{
+                    backgroundColor: "transparent",
+                    textAlign: "right",
+                    right: -75,
+                    marginTop: -10,
+                  }}
+                >
+                  <TouchableOpacity
+                    onPress={() => {
+                      setShowModal(false);
+                    }}
+                  >
+                    <MaterialCommunityIcons
+                      name="close-circle"
+                      size={28}
+                      color="black"
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View style={styles.Descriptionwrapper}>
+                <View style={styles.programDesc}>
+                  <Text
+                    style={{
+                      marginRight: 20,
+                      paddingHorizontal: 10,
+                      fontSize: 18,
+                      fontFamily: "nunito-bold",
+                    }}
+                  >
+                    Program Description:
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      paddingVertical: 2,
+                      paddingHorizontal: 10,
+                    }}
+                  >
+                    Program Value
+                  </Text>
+                </View>
+                <View style={styles.rewardPts}>
+                  <Text
+                    style={{
+                      marginRight: 20,
+                      paddingHorizontal: 10,
+                      fontSize: 18,
+                      fontFamily: "nunito-bold",
+                    }}
+                  >
+                    Reward Points:
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      paddingVertical: 2,
+                      paddingHorizontal: 10,
+                    }}
+                  >
+                    Reward Value
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        </Modal>
         <View style={{ alignSelf: "center" }}>
           <View style={styles.profileImage}>
             <Image
@@ -129,29 +264,49 @@ export default function AccountProfileModule() {
               resizeMode="center"
             ></Image>
           </View>
-          <View style={styles.dm}>
-            <MaterialIcons
-              name="chat"
-              size={18}
-              color="#DFD8C8"
-            ></MaterialIcons>
+          <View style={styles.out}>
+            <TouchableOpacity onPress={handleLogout}>
+              <MaterialIcons
+                name="logout"
+                size={18}
+                color="#DFD8C8"
+              ></MaterialIcons>
+              <View>
+              </View>
+              
+            </TouchableOpacity>
           </View>
         </View>
         <View style={styles.text}>
           <Text style={{ fontWeight: "bold", left: 20, bottom: 20 }}>
-            {" "}
             Basic Information
           </Text>
         </View>
-        <View>
-          <CustomInput placeholder="First Name" />
-          <CustomInput placeholder="Middle Name" />
-          <CustomInput placeholder="Last Name" />
-          <CustomInput placeholder="Contact Number" />
-          <CustomInput placeholder="Email" />
-          <CustomInput placeholder="Address" />
-          <CustomInput placeholder="Date of Birth" />
-        </View>
+
+        {customerData !== null ? (
+          <View>
+            <CustomInput
+              placeholder="First Name"
+              value={customerData.firstname}
+            />
+            <CustomInput
+              placeholder="Middle Name (Optional)"
+              value={customerData.middleName}
+            />
+            <CustomInput
+              placeholder="Last Name"
+              value={customerData.lastName}
+            />
+            <CustomInput
+              placeholder="Contact Number"
+              value={customerData.phoneNumber}
+            />
+            <CustomInput placeholder="Email" value={customerData.email} />
+            <CustomInput placeholder="Address" value={customerData.address} />
+          </View>
+        ) : (
+          <Text>No customer data found</Text>
+        )}
 
         <TouchableOpacity onPress={onPress}>
           <View style={styles.btn}>
@@ -186,14 +341,16 @@ const styles = StyleSheet.create({
     height: 200,
     borderRadius: 100,
     overflow: "hidden",
+    //backgroundColor:'red'
   },
 
-  dm: {
+  out: {
     backgroundColor: "#41444B",
     position: "absolute",
-    top: 20,
+    top: 40,
     width: 40,
     height: 40,
+    marginLeft: 220,
     borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
@@ -251,17 +408,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   Descriptionwrapper: {
-   // backgroundColor: "green",
+    // backgroundColor: "green",
     paddingVertical: 5,
     marginTop: 10,
     height: 120,
   },
-  programDesc:{
+  programDesc: {
     //backgroundColor:'red',
     //flexDirection:'row'
   },
-  rewardPts:{
+  rewardPts: {
     //backgroundColor:'gray',
-    marginTop:10
-  }
+    marginTop: 10,
+  },
 });
