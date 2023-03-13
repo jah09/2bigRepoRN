@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard, ScrollView, Platform, SafeAreaView } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { globalStyles } from '../ForStyle/GlobalStyles';
-import { useFonts } from 'expo-font';
+//import { useFonts } from 'expo-font';
 import { FontAwesome } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
@@ -12,14 +12,66 @@ import { Fontisto } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as Location from 'expo-location';
 import { geocodeAsync, reverseGeocodeAsync } from 'expo-location';
+import { getDatabase,ref, set, push, child} from "firebase/database";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+//import DatePickerExample from '../shared/datePicker';
+
 
 
 
 export default function CreateAccountPage({ navigation }) {
+
+
+
+  const [checkValidEmail, setCheckValidEmail] = useState(false);
+
+  const handleCheckEmail =(text) => {
+    let re = /\S+@\S+\.\S+/;
+    let regex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+
+    setEmail(text)
+    if(re.test(text) || regex.test(text)) {
+        setCheckValidEmail(false)
+    }
+      else {
+        setCheckValidEmail(true)
+      }
+  }
+  const checkPasswordValidity = value => {
+    const isNonWhiteSpace = /^\S*$/;
+    if (!isNonWhiteSpace.test(value)) {
+      return 'Password must not contain Whitespaces.';
+    }
+
+    const isContainsUppercase = /^(?=.*[A-Z]).*$/;
+    if (!isContainsUppercase.test(value)) {
+      return 'Password must have at least one Uppercase Character.';
+    }
+
+    const isContainsLowercase = /^(?=.*[a-z]).*$/;
+    if (!isContainsLowercase.test(value)) {
+      return 'Password must have at least one Lowercase Character.';
+    }
+
+    const isContainsNumber = /^(?=.*[0-9]).*$/;
+    if (!isContainsNumber.test(value)) {
+      return 'Password must contain at least one Digit.';
+    }
+
+    const isValidLength = /^.{8,16}$/;
+    if (!isValidLength.test(value)) {
+      return 'Password must be 8-16 Characters Long.';
+    }
+
+    return null;
+  };
+  
+ 
+  
   const onPressHandler_forLogin = () => {
     navigation.navigate('Login');
   }
-
+ 
   {/*code for eye button in password input */ }
   const [showPassword, setShowPassword] = useState(false);
   const [visible, setVisible] = useState(true);
@@ -31,33 +83,14 @@ export default function CreateAccountPage({ navigation }) {
   const [visibleStatusBar, setvisibleStatusbar] = useState(false);
   const [styleStatusBar, setstyleStatusBar] = useState(styleTypes[0]);
 
-  {/*for date picker code start */ }
-  const [date, setDate] = useState(new Date());
-  const [mode, setMode] = useState('date');
-  const [show, setShow] = useState(false);
   
-  const showMode = (currentMode) => {
-    setShow(true);
-    setMode(currentMode);
-  }
 
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setShow(Platform.OS === 'ios');
-    setDate(currentDate);
-
-    let tempDate = new Date(currentDate);
-    let fDate = tempDate.getDate() + '/' + (tempDate.getMonth() + 1) + '/' + tempDate.getFullYear();
-    setText(fDate);
-  }
-  const [text, setText] = useState('');
-  {/*for date picker code end here */ }
 
   {/* for detecting geolocation and reverse code start here*/ }
-  const [location, setLocation] = useState(null);
-  const [address, setAddress] = useState(null);
-  const [addresstext, setAddresstext] = useState('');
-  const [isPressed, setIsPressed] = useState(false);
+    const [location, setLocation] = useState(null);
+    // const [address, setAddress] = useState(null);
+     const [addresstext, setAddresstext] = useState('');
+    const [isPressed, setIsPressed] = useState(false);
  
 
   useEffect(() => {
@@ -85,8 +118,103 @@ export default function CreateAccountPage({ navigation }) {
     }
   }, [isPressed]);
 
-
   {/* for detecting geolocation and reverse code end here*/ }
+
+
+  //firebase data for creating account
+
+  const [firstName, setFName]= useState('');
+  const [middleName, setMName] = useState('');
+  const [lastName, setLName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [BOD, setBOD] = useState('');
+  const [address, setAddress] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [conPass, setConPass] = useState('');
+
+
+  const handleCreate = () => {
+    
+    try {
+      //tocheck if na fillout ba tnan fields except sa middle name
+       if (firstName.trim() === '' ||
+        lastName.trim() === '' || 
+        email.trim() === '' || 
+        phone.trim() === '' ||
+       // BOD.trim() === '' ||
+        password.trim() === '' ||
+        address.trim() === '' || 
+        conPass.trim() === '' 
+        ){
+        alert('Please fill out all fields.');
+        return;
+       }
+
+  
+       // Check if password matches confirm password
+    if (password !== conPass) {
+      alert('Passwords do not match');
+      return;
+    }
+
+    // Check password strength
+    const checkPassword = checkPasswordValidity(password);
+    if (!checkPassword) {
+      createUserAccount();
+       // calls the create function to proceed with the creation of account
+      alert('Account created successfully');
+    } else {
+      alert('Weak password. Please enter a stronger password for security.');
+    }
+
+  } catch (error) {
+    console.log( error)
+    alert('There was a problem creating your account');
+  }
+}
+
+
+  function createUserAccount (){
+    const auth = getAuth();
+    createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+        const user = userCredential.user;
+        const db = getDatabase();
+
+    //handleCheckEmail();
+    
+    //key generator apili
+    const cusId = Math.floor(Math.random()*900000) + 100000;
+    const newId = push(child(ref(db), 'CUSTOMER'));
+
+    set(ref(db, 'CUSTOMER/' + cusId), {  
+    cusId: cusId,
+    firstname: firstName,
+    middleName: middleName,
+    lastName: lastName,
+    phoneNumber: phone,
+    birthdate: BOD,
+    address: address,
+    email: email,
+    password: password,
+    confirmPassword: conPass
+})
+.then(() => {
+  alert('Registration successful');
+  navigation.navigate('Login');
+})
+.catch((error) => {
+  console.log(error);
+  alert('Error writing document: ', error);
+});
+})
+.catch((error) => {
+  console.log(error);
+alert('Error creating user: ', error);
+});
+};
+
   return (
     <SafeAreaView style={styles.safeviewStyle}>
       <TouchableWithoutFeedback onPress={() => {
@@ -119,10 +247,12 @@ export default function CreateAccountPage({ navigation }) {
                   style={globalStyles.login_Email_Icon} />
 
                 <TextInput
+                  value = {firstName}
+                  onChangeText={(firstName) => {setFName(firstName)}}
                   placeholder='First Name'
                   placeholderTextColor='black'
                   style={globalStyles.login_Email_textInput}
-                  keyboardType='default' />
+                  keyboardType='default'/>
               </View>
 
               {/*Middle name input */}
@@ -134,6 +264,8 @@ export default function CreateAccountPage({ navigation }) {
                   style={globalStyles.login_Email_Icon} />
 
                 <TextInput
+                  value = {middleName}
+                  onChangeText={(middleName) => {setMName(middleName)}}
                   placeholder='Middle Name'
                   placeholderTextColor='black'
                   style={globalStyles.login_Email_textInput}
@@ -149,6 +281,8 @@ export default function CreateAccountPage({ navigation }) {
                   style={globalStyles.login_Email_Icon} />
 
                 <TextInput
+                value = {lastName}
+                onChangeText={(lastName) => {setLName(lastName)}}
                   placeholder='Last Name'
                   placeholderTextColor='black'
                   style={globalStyles.login_Email_textInput}
@@ -164,14 +298,18 @@ export default function CreateAccountPage({ navigation }) {
                   style={styles.phoneNumberIcon} />
 
                 <TextInput
+                  value = {phone}
+                  onChangeText={(phone) => {setPhone(phone)}}
                   placeholder='Phone Number'
                   style={[globalStyles.login_Email_textInput, { marginLeft: 3 }]}
                   placeholderTextColor='black'
                   keyboardType='number-pad' />
               </View>
 
+              {/* <DatePickerExample   value = {BOD} onChangeText={(BOD) => {setBOD(BOD)}} /> */}
+
               {/*Birth date input */}
-              <View style={styles.ViewBirthdate}>
+              {/* <View style={styles.ViewBirthdate}>
                 <MaterialIcons
                   name='date-range'
                   size={23}
@@ -179,11 +317,13 @@ export default function CreateAccountPage({ navigation }) {
                   style={styles.phoneNumberIcon} />
 
                 <TextInput
+                  value = {BOD}
+                  onChangeText={(BOD) => {setBOD(BOD)}}
                   placeholder='Birth Date'
                   style={[globalStyles.login_Email_textInput, { marginLeft: 3 }]}
                   placeholderTextColor='black'
                   keyboardType='default'
-                  editable={false} >{text}</TextInput>
+                  editable={true} />
             
 
                 <TouchableOpacity style={globalStyles.btnClickEye}
@@ -193,7 +333,7 @@ export default function CreateAccountPage({ navigation }) {
               </View>
               {/*for birth datepicker */}
 
-              {show && (
+              {/* {show && (
                 <DateTimePicker
                 testID='datePicker'
                 value={date}
@@ -204,7 +344,7 @@ export default function CreateAccountPage({ navigation }) {
                 
                
                 />
-              )}
+              )}  */}
               {/*Address input */}
               <View style={styles.ViewAddress}>
                 <MaterialCommunityIcons
@@ -214,11 +354,13 @@ export default function CreateAccountPage({ navigation }) {
                   style={styles.phoneNumberIcon} />
 
                 <TextInput
+                value = {address}
+                onChangeText={(address) => {setAddress(address)}}
                   placeholder='Address'
                   style={[globalStyles.login_Email_textInput, { marginLeft: 3 }]}
                   placeholderTextColor='black'
                   keyboardType='default'
-                  editable={false} >{address}</TextInput>
+                  editable={false} />
 
                 <TouchableOpacity style={globalStyles.btnClickEye} onPress={() => setIsPressed(true)}>
 
@@ -234,16 +376,23 @@ export default function CreateAccountPage({ navigation }) {
               {/*Email input */}
               <View style={styles.ViewEmail}>
                 <MaterialIcons
-                  name='email'
+                  name='email'  
                   size={23}
                   color="black"
                   style={styles.phoneNumberIcon} />
 
                 <TextInput
-                  placeholder='Email'
-                  style={[globalStyles.login_Email_textInput, { marginLeft: 3 }]}
-                  placeholderTextColor='black'
-                  keyboardType='default' />
+                  placeholder="Email"
+                  value={email}
+                  onChangeText={text=> handleCheckEmail(text)}
+                  placeholderTextColor="black"
+                  style={globalStyles.login_Email_textInput}
+                />
+                  {checkValidEmail ? (
+              <Text style={styles.textFailed}>Invalid email</Text>
+               ) : (
+               <Text style={styles.textFailed}></Text>
+                 )}
               </View>
 
               {/* <View>
@@ -270,6 +419,8 @@ export default function CreateAccountPage({ navigation }) {
                   style={styles.phoneNumberIcon} />
 
                 <TextInput
+                  value = {password}
+                  onChangeText={(password) => {setPassword(password)}}
                   placeholder='Password'
                   style={[globalStyles.login_Email_textInput, { marginLeft: 3 }]}
                   placeholderTextColor='black'
@@ -299,6 +450,8 @@ export default function CreateAccountPage({ navigation }) {
                   style={styles.phoneNumberIcon} />
 
                 <TextInput
+                  value = {conPass}
+                  onChangeText={(conPass) => {setConPass(conPass)}}
                   placeholder='Confirm Password'
                   style={[globalStyles.login_Email_textInput, { marginLeft: 3 }]}
                   placeholderTextColor='black'
@@ -317,9 +470,32 @@ export default function CreateAccountPage({ navigation }) {
               </View>
 
               {/*for for signUP button */}
-              <View style={styles.customBtnStyle}>
-                <CustomBtn text='Register' />
-              </View>
+
+              {email == '' || checkValidEmail == true ? ( 
+                <TouchableOpacity disabled onPress={handleCreate}>
+                <View style={ [globalStyles.viewButtonStyle, {backgroundColor: "gray", marginRight: 50, marginTop: 10}] }>
+                        <Text style={globalStyles.buttonText}> Register</Text>
+                        <MaterialIcons 
+                        name="login" 
+                        size={24} 
+                        color="black" 
+                        style={globalStyles.loginIcon}
+                        />
+                  </View>
+                </TouchableOpacity> 
+              ):( <TouchableOpacity onPress={handleCreate}>
+                <View style={[globalStyles.viewButtonStyle, { marginRight: 50, marginTop: 10} ] }>
+                        <Text style={globalStyles.buttonText}> Register</Text>
+                        <MaterialIcons 
+                        name="login" 
+                        size={24} 
+                        color="black" 
+                        style={globalStyles.loginIcon}
+                        />
+                  </View>
+                </TouchableOpacity>) }
+              
+             
 
               <View style={[globalStyles.row, { marginTop: 25 }, { marginLeft: 10 }]}>
                 <Text>Already have an account?</Text>
@@ -439,12 +615,14 @@ const styles = StyleSheet.create({
   },
   safeviewStyle: {
     flex: 1
-  }
-
-
-
+  },
+  textFailed: {
+    alignSelf: 'flex-end',
+    color: 'red',
+    top: 30,
+    left: -70,
+    fontWeight: "bold"
+  },
 
 })
-
-
 

@@ -14,7 +14,12 @@ import Custombtn from "../shared/customButton";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { globalStyles } from "../ForStyle/GlobalStyles";
-import { auth } from "../firebaseConfig";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { db, getDatabase,  } from "../firebaseConfig";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ref,orderByChild,query,equalTo,onValue } from 'firebase/database';
+//import { onValue, push, set } from "firebase/database";
+
 export default function LoginModule({ navigation, text }) {
   const onPressHandler_forCreateAccount = () => {
     // navigation.navigate('CreateAccount');
@@ -32,13 +37,50 @@ export default function LoginModule({ navigation, text }) {
   const [showPassword, setShowPassword] = useState(false);
   const [visible, setVisible] = useState(true);
 
-  // database
 
-  const handleSignUp = () => {
-    auth.createUserWithEmailAndPass(email, password);
-  };
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
+ 
+  
 
+  const handleLogin = () => {
+    const auth = getAuth();
+    console.log(auth);
+    signInWithEmailAndPassword(auth, email, password)
+      .then(userCredential => {
+        const user = userCredential.user;
+        console.log('Logged in with:', user.email);
+  
+        const customerRef = ref(db, 'CUSTOMER');
+        const customerQuery = query(customerRef, orderByChild('email'), equalTo(email));
+  
+        onValue(customerQuery, snapshot => {
+          if (snapshot.exists()) {
+            const customerData = snapshot.val()[Object.keys(snapshot.val())[0]];
+           
+            AsyncStorage.setItem('customerData', JSON.stringify(customerData))
+              .then(() => {
+                navigation.navigate('TabNavigator');
+              })
+              .catch(error => {
+                console.log(error);
+                alert('Error saving data: ', error);
+              });
+          } else {
+            alert('No customer found with this email');
+          }
+        }, {
+          error: error => {
+            console.log(error);
+            alert('Error fetching data: ', error);
+          }
+        });
+  
+      })
+      .catch(error =>alert('Please Register'))
+  }
+  
   return (
     <SafeAreaView style={globalStyles.safeviewStyle}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -65,11 +107,12 @@ export default function LoginModule({ navigation, text }) {
                   color="black"
                   style={globalStyles.login_Email_Icon}
                 />
-                {/* <TextInput
+                <TextInput
                   placeholder="Email"
                   placeholderTextColor="black"
+                  onChangeText = {text => setEmail(text) }
                   style={globalStyles.login_Email_textInput}
-                /> */}
+                />
                 
               </View>
 
@@ -87,6 +130,7 @@ export default function LoginModule({ navigation, text }) {
                     globalStyles.login_Password_textInput,
                     { width: 195 },
                   ]}
+                  onChangeText={text => setPassword(text)}
                   secureTextEntry={visible}
                   placeholderTextColor="black"
                 />
@@ -116,7 +160,7 @@ export default function LoginModule({ navigation, text }) {
               </TouchableOpacity>
               {/*login btn */}
 
-              <Custombtn text="Login" onPress={onPressHandler_toMainPage} />
+              <Custombtn text="Login" onPress={handleLogin}  />
 
               <View style={globalStyles.row}>
                 <Text>Don't have an account?</Text>
