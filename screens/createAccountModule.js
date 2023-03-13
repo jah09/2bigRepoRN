@@ -1,72 +1,101 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard, ScrollView, Platform, SafeAreaView } from 'react-native';
-import React, { useState, useEffect } from 'react';
-import { globalStyles } from '../ForStyle/GlobalStyles';
-import { useFonts } from 'expo-font';
-import { FontAwesome } from '@expo/vector-icons';
-import { MaterialIcons } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import CustomBtn from '../shared/customButton';
-import { Fontisto } from '@expo/vector-icons';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import * as Location from 'expo-location';
-import { geocodeAsync, reverseGeocodeAsync } from 'expo-location';
-
-
+import { StatusBar } from "expo-status-bar";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  Keyboard,
+  ScrollView,
+  Platform,
+  SafeAreaView,
+  Modal,
+  Pressable,
+  Linking,
+} from "react-native";
+import React, { useState, useEffect } from "react";
+import { globalStyles } from "../ForStyle/GlobalStyles";
+import { useFonts } from "expo-font";
+import { FontAwesome } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import CustomBtn from "../shared/customButton";
+import { Fontisto } from "@expo/vector-icons";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import * as Location from "expo-location";
+import { geocodeAsync, reverseGeocodeAsync } from "expo-location";
 
 export default function CreateAccountPage({ navigation }) {
   const onPressHandler_forLogin = () => {
-    navigation.navigate('Login');
-  }
+    navigation.navigate("Login");
+  };
 
-  {/*code for eye button in password input */ }
+  {
+    /*code for eye button in password input */
+  }
   const [showPassword, setShowPassword] = useState(false);
   const [visible, setVisible] = useState(true);
   const [showConfirmPass, setshowConfirmPass] = useState(false);
   const [visibleConfirmPass, setvisibleConfirmPass] = useState(true);
 
-  {/*style para dili mo overlapp ang logo sa status bar */ }
-  const styleTypes = ['default', 'dark-content', 'light-content'];
+  {
+    /*style para dili mo overlapp ang logo sa status bar */
+  }
+  const styleTypes = ["default", "dark-content", "light-content"];
   const [visibleStatusBar, setvisibleStatusbar] = useState(false);
   const [styleStatusBar, setstyleStatusBar] = useState(styleTypes[0]);
 
-  {/*for date picker code start */ }
+  {
+    /*for date picker code start */
+  }
   const [date, setDate] = useState(new Date());
-  const [mode, setMode] = useState('date');
+  const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
-  
+
   const showMode = (currentMode) => {
     setShow(true);
     setMode(currentMode);
-  }
+  };
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
-    setShow(Platform.OS === 'ios');
+    setShow(Platform.OS === "ios");
     setDate(currentDate);
 
     let tempDate = new Date(currentDate);
-    let fDate = tempDate.getDate() + '/' + (tempDate.getMonth() + 1) + '/' + tempDate.getFullYear();
+    let fDate =
+      tempDate.getDate() +
+      "/" +
+      (tempDate.getMonth() + 1) +
+      "/" +
+      tempDate.getFullYear();
     setText(fDate);
+  };
+  const [text, setText] = useState("");
+  {
+    /*for date picker code end here */
   }
-  const [text, setText] = useState('');
-  {/*for date picker code end here */ }
 
-  {/* for detecting geolocation and reverse code start here*/ }
+  {
+    /* for detecting geolocation and reverse code start here*/
+  }
   const [location, setLocation] = useState(null);
   const [address, setAddress] = useState(null);
-  const [addresstext, setAddresstext] = useState('');
+  const [addresstext, setAddresstext] = useState("");
   const [isPressed, setIsPressed] = useState(false);
- 
 
   useEffect(() => {
-
     if (isPressed) {
       (async () => {
         let { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-          console.log('Permission to access location was denied');
+
+        if (status !== "granted") {
+          console.log("Permission to access location was denied");
+          //  console.log('Redirecting to login page...');
+          //  navigation.navigate('Login');
           return;
         }
 
@@ -77,173 +106,333 @@ export default function CreateAccountPage({ navigation }) {
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,
         });
-         
-        setAddress(address[0].name + ', ' + address[0].city);
-        console.log(address[0].name + ', '+address[0].subregion+',' + address[0].city);
 
+        setAddress(address[0].name + ", " + address[0].city);
+        console.log(
+          address[0].name + ", " + address[0].subregion + "," + address[0].city
+        );
+        // setShowModal(false);
       })();
     }
   }, [isPressed]);
 
+  {
+    /* for detecting geolocation and reverse code end here*/
+  }
 
-  {/* for detecting geolocation and reverse code end here*/ }
+  {
+    /*modal codes */
+  }
+  const [showModal, setShowModal] = useState(false);
+  const onPressHandlerShowModal = () => {
+    setShowModal(true);
+  };
   return (
     <SafeAreaView style={styles.safeviewStyle}>
-      <TouchableWithoutFeedback onPress={() => {
-        Keyboard.dismiss();
-      }}>
+      <TouchableWithoutFeedback
+        onPress={() => {
+          Keyboard.dismiss();
+        }}
+      >
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-
           <View style={styles.container}>
+            <Modal
+              transparent
+              onRequestClose={() => {
+                setShowModal(false);
+              }}
+              visible={showModal}
+            >
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: "#00000099",
+                }}
+              >
+                <View style={styles.permissionModal}>
+                  <View style={styles.modalTitle}>
+                    <Text
+                      style={{
+                        marginTop: 8,
+                        justifyContent: "flex-start",
+                        marginLeft: -160,
+                        fontFamily: "nunito-bold",
+                        fontSize: 18,
+                      }}
+                    >
+                     Use location?
+                    </Text>
+
+                    <View
+                      style={{
+                        backgroundColor: "transparent",
+                        textAlign: "right",
+                        right: -177,
+                        marginTop: -10,
+                      }}
+                    >
+                      <TouchableOpacity
+                        onPress={() => {
+                          setShowModal(false);
+                        }}
+                      >
+                        <MaterialCommunityIcons
+                          name="close-circle"
+                          size={28}
+                          color="black"
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                  <View
+                    style={{
+                      // backgroundColor: "green",
+                      padding: 10,
+                      marginTop: 10,
+                      height: 60,
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text style={{ fontFamily: "nunito-light", fontSize: 17 }}>
+                    2Big application wants to turn on your current location.
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      // backgroundColor: "red",
+                      padding: 5,
+                      marginTop: 20,
+                      height: 30,
+                      flexDirection: "row",
+                      justifyContent: "flex-end",
+                    }}
+                  >
+                    <TouchableOpacity
+                      onPress={() => {
+                        //setShowModal(false);
+                        navigation.navigate("DeadEndPage")
+                      }}
+                    >
+                      <Text
+                        style={{
+                          marginRight: 30,
+                          fontFamily: "nunito-bold",
+                          fontSize: 18,
+                        }}
+                      >
+                        Deny
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => {setIsPressed(true)
+                    setShowModal(false)
+                    }}>
+                      <Text
+                        style={{
+                          marginRight: 15,
+                          fontFamily: "nunito-bold",
+                          fontSize: 18,
+                        }}
+                      >
+                        Allow
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </Modal>
 
             <View style={styles.form}>
               {/* our own logo */}
-              <Image source={require('../assets/logo_dic.png')}
-                style={styles.imageStyle} />
+              <Image
+                source={require("../assets/logo_dic.png")}
+                style={styles.imageStyle}
+              />
 
-              <Text style={[globalStyles.textStyles,
-              {
-                marginTop: 20,
-                fontFamily: 'nunito-bold',
-                fontSize: 25
-              }]}>Create Account </Text>
+              <Text
+                style={[
+                  globalStyles.textStyles,
+                  {
+                    marginTop: 20,
+                    fontFamily: "nunito-bold",
+                    fontSize: 25,
+                  },
+                ]}
+              >
+                Create Account{" "}
+              </Text>
 
-
-              <StatusBar backgroundColor='black' styleStatusBar={styleStatusBar} />
+              <StatusBar
+                backgroundColor="black"
+                styleStatusBar={styleStatusBar}
+              />
               {/*first name input */}
               <View style={styles.ViewFirstname}>
                 <FontAwesome
-                  name='user'
+                  name="user"
                   size={23}
                   color="black"
-                  style={globalStyles.login_Email_Icon} />
+                  style={globalStyles.login_Email_Icon}
+                />
 
                 <TextInput
-                  placeholder='First Name'
-                  placeholderTextColor='black'
+                  placeholder="First Name"
+                  placeholderTextColor="black"
                   style={globalStyles.login_Email_textInput}
-                  keyboardType='default' />
+                  keyboardType="default"
+                />
               </View>
 
               {/*Middle name input */}
               <View style={styles.ViewMiddlename}>
                 <FontAwesome
-                  name='user'
+                  name="user"
                   size={23}
                   color="black"
-                  style={globalStyles.login_Email_Icon} />
+                  style={globalStyles.login_Email_Icon}
+                />
 
                 <TextInput
-                  placeholder='Middle Name'
-                  placeholderTextColor='black'
+                  placeholder="Middle Name"
+                  placeholderTextColor="black"
                   style={globalStyles.login_Email_textInput}
-                  keyboardType='default' />
+                  keyboardType="default"
+                />
               </View>
 
               {/*Last name input */}
               <View style={styles.ViewMiddlename}>
                 <FontAwesome
-                  name='user'
+                  name="user"
                   size={23}
                   color="black"
-                  style={globalStyles.login_Email_Icon} />
+                  style={globalStyles.login_Email_Icon}
+                />
 
                 <TextInput
-                  placeholder='Last Name'
-                  placeholderTextColor='black'
+                  placeholder="Last Name"
+                  placeholderTextColor="black"
                   style={globalStyles.login_Email_textInput}
-                  keyboardType='default' />
+                  keyboardType="default"
+                />
               </View>
 
               {/*Phone number  input */}
               <View style={styles.ViewPhoneNumber}>
                 <MaterialIcons
-                  name='contacts'
+                  name="contacts"
                   size={22}
                   color="black"
-                  style={styles.phoneNumberIcon} />
+                  style={styles.phoneNumberIcon}
+                />
 
                 <TextInput
-                  placeholder='Phone Number'
-                  style={[globalStyles.login_Email_textInput, { marginLeft: 3 }]}
-                  placeholderTextColor='black'
-                  keyboardType='number-pad' />
+                  placeholder="Phone Number"
+                  style={[
+                    globalStyles.login_Email_textInput,
+                    { marginLeft: 3 },
+                  ]}
+                  placeholderTextColor="black"
+                  keyboardType="number-pad"
+                />
               </View>
 
               {/*Birth date input */}
               <View style={styles.ViewBirthdate}>
                 <MaterialIcons
-                  name='date-range'
+                  name="date-range"
                   size={23}
                   color="black"
-                  style={styles.phoneNumberIcon} />
+                  style={styles.phoneNumberIcon}
+                />
 
                 <TextInput
-                  placeholder='Birth Date'
-                  style={[globalStyles.login_Email_textInput, { marginLeft: 3 }]}
-                  placeholderTextColor='black'
-                  keyboardType='default'
-                  editable={false} >{text}</TextInput>
-            
+                  placeholder="Birth Date"
+                  style={[
+                    globalStyles.login_Email_textInput,
+                    { marginLeft: 3 },
+                  ]}
+                  placeholderTextColor="black"
+                  keyboardType="default"
+                  editable={false}
+                >
+                  {text}
+                </TextInput>
 
-                <TouchableOpacity style={globalStyles.btnClickEye}
-                  onPress={() => showMode('date')}>
-                  <Fontisto name="date" size={23} color="black" style={{ marginRight: -5 }} />
+                <TouchableOpacity
+                  style={globalStyles.btnClickEye}
+                  onPress={() => showMode("date")}
+                >
+                  <Fontisto
+                    name="date"
+                    size={23}
+                    color="black"
+                    style={{ marginRight: -5 }}
+                  />
                 </TouchableOpacity>
               </View>
               {/*for birth datepicker */}
 
               {show && (
                 <DateTimePicker
-                testID='datePicker'
-                value={date}
-                mode={mode}
-                is24Hour={true}
-                display='default'
-                onChange={onChange}
-                
-               
+                  testID="datePicker"
+                  value={date}
+                  mode={mode}
+                  is24Hour={true}
+                  display="default"
+                  onChange={onChange}
                 />
               )}
               {/*Address input */}
               <View style={styles.ViewAddress}>
                 <MaterialCommunityIcons
-                  name='map-marker-radius'
+                  name="map-marker-radius"
                   size={23}
                   color="black"
-                  style={styles.phoneNumberIcon} />
+                  style={styles.phoneNumberIcon}
+                />
 
                 <TextInput
-                  placeholder='Address'
-                  style={[globalStyles.login_Email_textInput, { marginLeft: 3 }]}
-                  placeholderTextColor='black'
-                  keyboardType='default'
-                  editable={false} >{address}</TextInput>
+                  placeholder="Address"
+                  style={[
+                    globalStyles.login_Email_textInput,
+                    { marginLeft: 3 },
+                  ]}
+                  placeholderTextColor="black"
+                  keyboardType="default"
+                  editable={false}
+                >
+                  {address}
+                </TextInput>
 
-                <TouchableOpacity style={globalStyles.btnClickEye} onPress={() => setIsPressed(true)}>
-
-                  <FontAwesome
-                    name='map-pin'
-                    size={22}
-                    color="black"
-                  />
+                <TouchableOpacity
+                  style={globalStyles.btnClickEye}
+                  //  onPress={() => setIsPressed(true)}
+                  onPress={onPressHandlerShowModal}
+                >
+                  <FontAwesome name="map-pin" size={22} color="black" />
                 </TouchableOpacity>
-
               </View>
 
               {/*Email input */}
               <View style={styles.ViewEmail}>
                 <MaterialIcons
-                  name='email'
+                  name="email"
                   size={23}
                   color="black"
-                  style={styles.phoneNumberIcon} />
+                  style={styles.phoneNumberIcon}
+                />
 
                 <TextInput
-                  placeholder='Email'
-                  style={[globalStyles.login_Email_textInput, { marginLeft: 3 }]}
-                  placeholderTextColor='black'
-                  keyboardType='default' />
+                  placeholder="Email"
+                  style={[
+                    globalStyles.login_Email_textInput,
+                    { marginLeft: 3 },
+                  ]}
+                  placeholderTextColor="black"
+                  keyboardType="default"
+                />
               </View>
 
               {/* <View>
@@ -259,97 +448,108 @@ export default function CreateAccountPage({ navigation }) {
                 )}
               </View> */}
 
-
               {/*password input */}
               <View style={styles.ViewEmail}>
                 <Ionicons
-                  name='md-lock-closed-sharp'
-
+                  name="md-lock-closed-sharp"
                   size={23}
                   color="black"
-                  style={styles.phoneNumberIcon} />
+                  style={styles.phoneNumberIcon}
+                />
 
                 <TextInput
-                  placeholder='Password'
-                  style={[globalStyles.login_Email_textInput, { marginLeft: 3 }]}
-                  placeholderTextColor='black'
-                  secureTextEntry={visible} />
+                  placeholder="Password"
+                  style={[
+                    globalStyles.login_Email_textInput,
+                    { marginLeft: 3 },
+                  ]}
+                  placeholderTextColor="black"
+                  secureTextEntry={visible}
+                />
 
-                <TouchableOpacity style={globalStyles.btnClickEye}
+                <TouchableOpacity
+                  style={globalStyles.btnClickEye}
                   onPress={() => {
-                    setVisible(!visible)
-                    setShowPassword(!showPassword)
-                  }}>
+                    setVisible(!visible);
+                    setShowPassword(!showPassword);
+                  }}
+                >
                   <Ionicons
-                    name={showPassword === false ? 'eye' : 'eye-off'}
+                    name={showPassword === false ? "eye" : "eye-off"}
                     size={23}
-                    color="black" />
+                    color="black"
+                  />
                 </TouchableOpacity>
-
-
               </View>
 
               {/*Confirm password input */}
               <View style={styles.ViewEmail}>
                 <Ionicons
-                  name='md-lock-closed-sharp'
-
+                  name="md-lock-closed-sharp"
                   size={23}
                   color="black"
-                  style={styles.phoneNumberIcon} />
+                  style={styles.phoneNumberIcon}
+                />
 
                 <TextInput
-                  placeholder='Confirm Password'
-                  style={[globalStyles.login_Email_textInput, { marginLeft: 3 }]}
-                  placeholderTextColor='black'
-                  secureTextEntry={visibleConfirmPass} />
+                  placeholder="Confirm Password"
+                  style={[
+                    globalStyles.login_Email_textInput,
+                    { marginLeft: 3 },
+                  ]}
+                  placeholderTextColor="black"
+                  secureTextEntry={visibleConfirmPass}
+                />
 
-                <TouchableOpacity style={globalStyles.btnClickEye}
+                <TouchableOpacity
+                  style={globalStyles.btnClickEye}
                   onPress={() => {
-                    setvisibleConfirmPass(!visibleConfirmPass)
-                    setshowConfirmPass(!showConfirmPass)
-                  }}>
+                    setvisibleConfirmPass(!visibleConfirmPass);
+                    setshowConfirmPass(!showConfirmPass);
+                  }}
+                >
                   <Ionicons
-                    name={showConfirmPass === false ? 'eye' : 'eye-off'}
+                    name={showConfirmPass === false ? "eye" : "eye-off"}
                     size={23}
-                    color="black" />
+                    color="black"
+                  />
                 </TouchableOpacity>
               </View>
 
               {/*for for signUP button */}
               <View style={styles.customBtnStyle}>
-                <CustomBtn text='Register' />
+                <CustomBtn text="Register" />
               </View>
 
-              <View style={[globalStyles.row, { marginTop: 25 }, { marginLeft: 10 }]}>
+              <View
+                style={[
+                  globalStyles.row,
+                  { marginTop: 25 },
+                  { marginLeft: 10 },
+                ]}
+              >
                 <Text>Already have an account?</Text>
                 <TouchableOpacity onPress={onPressHandler_forLogin}>
                   <Text style={globalStyles.clickHerestyle}> Click here.</Text>
                 </TouchableOpacity>
               </View>
-
-
-
             </View>
           </View>
-
-
         </ScrollView>
       </TouchableWithoutFeedback>
     </SafeAreaView>
-
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   phoneNumberIcon: {
-    marginLeft: -2
+    marginLeft: -2,
   },
   container: {
     flex: 1,
-    backgroundColor: '#F8E2CF',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#F8E2CF",
+    alignItems: "center",
+    justifyContent: "center",
     // paddingTop: Constants.statusBarHeight,
     padding: 8,
     paddingTop: 70,
@@ -361,90 +561,95 @@ const styles = StyleSheet.create({
     marginTop: -25,
   },
   scrollViewStyle: {
-    backgroundColor: 'red',
-    width: '100%'
+    backgroundColor: "red",
+    width: "100%",
   },
   form: {
-    alignItems: 'center',
-    width: '100%'
-
+    alignItems: "center",
+    width: "100%",
   },
   ViewFirstname: {
-    flexDirection: 'row',
-    borderBottomColor: 'black',
+    flexDirection: "row",
+    borderBottomColor: "black",
     borderBottomWidth: 1,
     paddingBottom: 2,
     marginBottom: 25,
     width: 270,
-    marginTop: 50
-
+    marginTop: 50,
   },
   ViewMiddlename: {
-    flexDirection: 'row',
-    borderBottomColor: 'black',
+    flexDirection: "row",
+    borderBottomColor: "black",
     borderBottomWidth: 1,
     paddingBottom: 2,
     marginBottom: 25,
     width: 270,
-    marginTop: 5
+    marginTop: 5,
   },
   ViewMiddlename: {
-    flexDirection: 'row',
-    borderBottomColor: 'black',
+    flexDirection: "row",
+    borderBottomColor: "black",
     borderBottomWidth: 1,
     paddingBottom: 2,
     marginBottom: 25,
     width: 270,
-    marginTop: 5
+    marginTop: 5,
   },
   ViewPhoneNumber: {
-    flexDirection: 'row',
-    borderBottomColor: 'black',
+    flexDirection: "row",
+    borderBottomColor: "black",
     borderBottomWidth: 1,
     paddingBottom: 2,
     marginBottom: 25,
     width: 270,
-    marginTop: 5
+    marginTop: 5,
   },
   ViewEmail: {
-    flexDirection: 'row',
-    borderBottomColor: 'black',
+    flexDirection: "row",
+    borderBottomColor: "black",
     borderBottomWidth: 1,
     paddingBottom: 2,
     marginBottom: 25,
     width: 270,
-    marginTop: 5
+    marginTop: 5,
   },
   ViewBirthdate: {
-    flexDirection: 'row',
-    borderBottomColor: 'black',
+    flexDirection: "row",
+    borderBottomColor: "black",
     borderBottomWidth: 1,
     paddingBottom: 2,
     marginBottom: 25,
     width: 270,
-    marginTop: 5
+    marginTop: 5,
   },
   ViewAddress: {
-    flexDirection: 'row',
-    borderBottomColor: 'black',
+    flexDirection: "row",
+    borderBottomColor: "black",
     borderBottomWidth: 1,
     paddingBottom: 2,
     marginBottom: 25,
     width: 270,
-    marginTop: 5
+    marginTop: 5,
   },
   customBtnStyle: {
     right: 30,
-    marginTop: -20
+    marginTop: -20,
   },
   safeviewStyle: {
-    flex: 1
-  }
-
-
-
-
-})
-
-
-
+    flex: 1,
+  },
+  permissionModal: {
+    width: 300,
+    height: 150,
+    backgroundColor: "darkgray",
+    borderBottomColor: "gray",
+    borderBottomWidth: 1,
+    borderRadius: 10,
+    elevation: 10,
+  },
+  modalTitle: {
+    justifyContent: "center",
+    padding: 0,
+    flexDirection: "row",
+  },
+});

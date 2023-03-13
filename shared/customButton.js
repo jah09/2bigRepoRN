@@ -9,7 +9,7 @@ export default function CustomButton({text,onPress}){
        
         <TouchableOpacity onPress={onPress}> 
             <View style={globalStyles.viewButtonStyle}>
-                    <Text style={globalStyles.buttonText}>{text}</Text>
+                    <Text style={globalStyles.buttonText}>{text}</Text> 
                     <MaterialIcons 
                     name="login" 
                     size={24} 

@@ -65,11 +65,11 @@ export default function LoginModule({ navigation, text }) {
                   color="black"
                   style={globalStyles.login_Email_Icon}
                 />
-                {/* <TextInput
+                 <TextInput
                   placeholder="Email"
                   placeholderTextColor="black"
                   style={globalStyles.login_Email_textInput}
-                /> */}
+                /> 
                 
               </View>
 

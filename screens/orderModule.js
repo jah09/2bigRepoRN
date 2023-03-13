@@ -13,7 +13,8 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useRoute } from "@react-navigation/native";
 import { globalStyles } from "../ForStyle/GlobalStyles";
-
+import { db } from "../firebaseConfig";
+import { ref, onValue, orderByChild, query, equalTo } from "firebase/database";
 export default function ProductComponent() {
   // const route = useRoute();
   // const { storeName } = route.params.storeName;
@@ -36,6 +37,35 @@ export default function ProductComponent() {
   const onPressHandlerShowModal = () => {
     setShowModal(true);
   };
+  const [showDetails, setShowDetails] = useState(true);
+  const handleCheckIconClick = () => {
+    setShowDetails(false);
+    setOrderInfo([]);
+   // console.log("naay sud or wala?", setOrderInfo());
+  };
+
+  const [orderInfo, setOrderInfo] = useState([]);
+
+ // console.log("Order infos222----", orderInfo);
+
+  useEffect(() => {
+    const orderRef = ref(db, "Orders/");
+    const Orderquery = query(
+      orderRef,
+      orderByChild("order_CustomerID"),
+      equalTo("090730")
+    );
+    onValue(Orderquery, (snapshot) => {
+      const data = snapshot.val();
+      const OrderInformation = Object.keys(data).map((key) => ({
+        id: key,
+        //StoreImage:data[key].StoreImage,
+        ...data[key],
+      }));
+      console.log("After reloading, this will display---", OrderInformation);
+      setOrderInfo(OrderInformation);
+    });
+  }, []);
   return (
     <View style={styles.container}>
       <Modal
@@ -124,9 +154,8 @@ export default function ProductComponent() {
                   keyboardType="numeric"
                 />
               </View>
-             
             </View>
-             {/*for custom Submit button */}
+            {/*for custom Submit button */}
             <View
               style={{
                 backgroundColor: "transparent",
@@ -134,7 +163,7 @@ export default function ProductComponent() {
                 height: 50,
               }}
             >
-              <TouchableOpacity >
+              <TouchableOpacity>
                 <View
                   style={{
                     borderRadius: 10,
@@ -180,319 +209,348 @@ export default function ProductComponent() {
       </View>
       <View style={styles.productWrapper}>
         <View style={styles.wrapperWaterProduct}>
-          <View style={styles.viewWaterItem}>
-            {/*Name of the store */}
-            <Text style={styles.productNameStyle}>
-              {route.params?.storeName || "No Store name to display"}
+          {orderInfo && orderInfo.length > 0 && showDetails ? (
+            <View style={styles.viewWaterItem}>
+              {/*Name of the store */}
+              {orderInfo &&
+                orderInfo.map((item, index) => {
+                  return (
+                    <View>
+                      <Text style={styles.productNameStyle}>
+                        {item.order_StoreName || "No Store name to display"}
+                      </Text>
+
+                      {/* Product template and its value  */}
+                      <View
+                        style={{
+                          // backgroundColor: "green",
+                          flexDirection: "row",
+                          alignItems: "flex-end",
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontFamily: "nunito-semibold",
+                            fontSize: 15,
+                          }}
+                        >
+                          Product Name
+                        </Text>
+                        <Text
+                          style={{
+                            fontFamily: "nunito-semibold",
+                            fontSize: 15,
+                            textAlign: "right",
+                            flex: 1,
+                          }}
+                        >
+                          {item.order_WaterProduct}
+                        </Text>
+                      </View>
+                      {/*delivery type  template and its value */}
+                      <View
+                        style={{
+                          // backgroundColor: "red",
+                          flexDirection: "row",
+                          alignItems: "flex-end",
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontFamily: "nunito-semibold",
+                            fontSize: 15,
+                            marginTop: 5,
+                          }}
+                        >
+                          Delivery Type
+                        </Text>
+                        <Text
+                          style={{
+                            fontFamily: "nunito-semibold",
+                            fontSize: 15,
+                            textAlign: "right",
+                            flex: 1,
+                          }}
+                        >
+                          {item.order_DeliveryTypeValue}
+                        </Text>
+                      </View>
+                      {/*order  template and its value */}
+                      <View
+                        style={{
+                          //  backgroundColor: "coral",
+                          flexDirection: "row",
+                          alignItems: "flex-end",
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontFamily: "nunito-semibold",
+                            fontSize: 15,
+                            marginTop: 5,
+                          }}
+                        >
+                          Order Type
+                        </Text>
+                        <Text
+                          style={{
+                            fontFamily: "nunito-semibold",
+                            fontSize: 15,
+                            textAlign: "right",
+                            flex: 1,
+                          }}
+                        >
+                          {item.order_OrderTypeValue}
+                        </Text>
+                      </View>
+
+                      {/*reservation  template and its value */}
+                      <View
+                        style={{
+                          //  backgroundColor: "blue",
+                          flexDirection: "row",
+                          alignItems: "flex-end",
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontFamily: "nunito-semibold",
+                            fontSize: 15,
+                            marginTop: 5,
+                          }}
+                        >
+                          Reservation Date
+                        </Text>
+                        <Text
+                          style={{
+                            fontFamily: "nunito-semibold",
+                            fontSize: 15,
+                            textAlign: "right",
+                            flex: 1,
+                          }}
+                        >
+                          {item.order_ReservationDate || "-"}
+                        </Text>
+                      </View>
+                      {/*Borrow gallon types  template and its value */}
+                      <View
+                        style={{
+                          // backgroundColor: "red",
+                          flexDirection: "row",
+                          alignItems: "flex-end",
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontFamily: "nunito-semibold",
+                            fontSize: 15,
+                            marginTop: 5,
+                          }}
+                        >
+                          Borrow Gallon
+                        </Text>
+                        <Text
+                          style={{
+                            fontFamily: "nunito-semibold",
+                            fontSize: 15,
+                            textAlign: "right",
+                            flex: 1,
+                          }}
+                        >
+                          {item.order_SwapGallonTypeValue}
+                        </Text>
+                      </View>
+
+                      {/*product  template and its value */}
+                      <View
+                        style={{
+                          // backgroundColor: "brown",
+                          flexDirection: "row",
+                          alignItems: "flex-end",
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontFamily: "nunito-semibold",
+                            fontSize: 15,
+                            marginTop: 5,
+                          }}
+                        >
+                          Product price
+                        </Text>
+                        <Text
+                          style={{
+                            fontFamily: "nunito-semibold",
+                            fontSize: 15,
+                            textAlign: "right",
+                            flex: 1,
+                          }}
+                        >
+                          {item.order_InitialAmount} x {item.order_Quantity}
+                        </Text>
+                      </View>
+
+                      {/*status  template and its value */}
+                      <View
+                        style={{
+                          // backgroundColor: "brown",
+                          flexDirection: "row",
+                          alignItems: "flex-end",
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontFamily: "nunito-semibold",
+                            fontSize: 15,
+                            marginTop: 5,
+                          }}
+                        >
+                          Status
+                        </Text>
+                        <Text
+                          style={{
+                            fontFamily: "nunito-semibold",
+                            fontSize: 15,
+                            textAlign: "right",
+                            flex: 1,
+                          }}
+                        >
+                          {item.order_OrderStatus}
+                        </Text>
+                      </View>
+
+                      <View
+                        style={{
+                          borderBottomWidth: 0.5,
+                          borderColor: "gray",
+                          marginTop: 10,
+                        }}
+                      ></View>
+                      <View
+                        style={{
+                          // backgroundColor: "brown",
+                          flexDirection: "row",
+                          alignItems: "flex-end",
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontFamily: "nunito-semibold",
+                            fontSize: 17,
+                            marginTop: 6,
+                          }}
+                        >
+                          Total
+                        </Text>
+                        <Text
+                          style={{
+                            fontFamily: "nunito-semibold",
+                            fontSize: 15,
+                            textAlign: "right",
+                            flex: 1,
+                          }}
+                        >
+                          Total Value
+                        </Text>
+                      </View>
+                    </View>
+                  );
+                })}
+
+              <View
+                style={{
+                  backgroundColor: "transparent",
+                  height: 50,
+                  flexDirection: "row",
+                  justifyContent: "flex-end",
+                }}
+              >
+                <TouchableOpacity onPress={onPressHandlerShowModal}>
+                  <View
+                    style={{
+                      // backgroundColor: "red",
+                      marginTop: 15,
+                      height: 25,
+                      borderRadius: 5,
+                      padding: 4,
+                      flexDirection: "row",
+                      width: 30,
+                      height: 30,
+                      justifyContent: "center",
+                      marginLeft: 85,
+                      marginRight: 5,
+                      // elevation: 4,
+                      alignItems: "center",
+                    }}
+                  >
+                    {/* <Text style={{ fontFamily: "nunito-semibold" }}>
+                Feedback
+              </Text> */}
+                    <MaterialIcons name="feedback" size={24} color="black" />
+                  </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => {
+                    Alert.alert("Confirmation", "Order received?", [
+                      {
+                        text: "Not yet",
+                        onPress: () => {
+                          console.log("not yet pressed!");
+                        },
+                      },
+                      {
+                        text: "Yes",
+                        onPress: () => {
+                          // console.log("Yes pressed!");
+                          handleCheckIconClick();
+                          console.log(
+                            'After Click the "Yes" Button',
+                            orderInfo
+                          );
+                        },
+                      },
+                    ]);
+                  }}
+                >
+                  <View
+                    style={{
+                      //  backgroundColor: "red",
+                      marginTop: 15,
+                      height: 25,
+                      //borderRadius: 5,
+                      padding: 4,
+                      flexDirection: "row",
+                      width: 30,
+                      justifyContent: "center",
+                      marginRight: 1,
+                      height: 30,
+                    }}
+                  >
+                    {/* <Text style={{ fontFamily: "nunito-semibold" }}>
+                Received
+              </Text> */}
+                    <MaterialIcons
+                      name="done"
+                      size={24}
+                      color="black"
+                      style={{ marginBottom: -10 }}
+                    />
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ) : (
+            <Text
+              style={{
+                fontSize: 20,
+                fontFamily: "nunito-semibold",
+                textAlign: "center",
+              }}
+            >
+              No order details to show
             </Text>
-
-            {/* Product template and its value  */}
-            <View
-              style={{
-                // backgroundColor: "green",
-                flexDirection: "row",
-                alignItems: "flex-end",
-              }}
-            >
-              <Text
-                style={{
-                  fontFamily: "nunito-semibold",
-                  fontSize: 15,
-                }}
-              >
-                Product Name Template
-              </Text>
-              <Text
-                style={{
-                  fontFamily: "nunito-semibold",
-                  fontSize: 15,
-                  textAlign: "right",
-                  flex: 1,
-                }}
-              >
-                Prodname value
-              </Text>
-            </View>
-            {/*delivery type  template and its value */}
-            <View
-              style={{
-                // backgroundColor: "red",
-                flexDirection: "row",
-                alignItems: "flex-end",
-              }}
-            >
-              <Text
-                style={{
-                  fontFamily: "nunito-semibold",
-                  fontSize: 15,
-                  marginTop: 5,
-                }}
-              >
-                Delivery Type Template
-              </Text>
-              <Text
-                style={{
-                  fontFamily: "nunito-semibold",
-                  fontSize: 15,
-                  textAlign: "right",
-                  flex: 1,
-                }}
-              >
-                Delivery value
-              </Text>
-            </View>
-            {/*order  template and its value */}
-            <View
-              style={{
-                //  backgroundColor: "coral",
-                flexDirection: "row",
-                alignItems: "flex-end",
-              }}
-            >
-              <Text
-                style={{
-                  fontFamily: "nunito-semibold",
-                  fontSize: 15,
-                  marginTop: 5,
-                }}
-              >
-                Order Type Template
-              </Text>
-              <Text
-                style={{
-                  fontFamily: "nunito-semibold",
-                  fontSize: 15,
-                  textAlign: "right",
-                  flex: 1,
-                }}
-              >
-                ordertype value
-              </Text>
-            </View>
-
-            {/*reservation  template and its value */}
-            <View
-              style={{
-                //  backgroundColor: "blue",
-                flexDirection: "row",
-                alignItems: "flex-end",
-              }}
-            >
-              <Text
-                style={{
-                  fontFamily: "nunito-semibold",
-                  fontSize: 15,
-                  marginTop: 5,
-                }}
-              >
-                Reservation Date
-              </Text>
-              <Text
-                style={{
-                  fontFamily: "nunito-semibold",
-                  fontSize: 15,
-                  textAlign: "right",
-                  flex: 1,
-                }}
-              >
-                ReserveDate value
-              </Text>
-            </View>
-            {/*Borrow gallon types  template and its value */}
-            <View
-              style={{
-                // backgroundColor: "red",
-                flexDirection: "row",
-                alignItems: "flex-end",
-              }}
-            >
-              <Text
-                style={{
-                  fontFamily: "nunito-semibold",
-                  fontSize: 15,
-                  marginTop: 5,
-                }}
-              >
-                Borrow Gallon Type
-              </Text>
-              <Text
-                style={{
-                  fontFamily: "nunito-semibold",
-                  fontSize: 15,
-                  textAlign: "right",
-                  flex: 1,
-                }}
-              >
-                BorrowgalVal
-              </Text>
-            </View>
-
-            {/*product  template and its value */}
-            <View
-              style={{
-                // backgroundColor: "brown",
-                flexDirection: "row",
-                alignItems: "flex-end",
-              }}
-            >
-              <Text
-                style={{
-                  fontFamily: "nunito-semibold",
-                  fontSize: 15,
-                  marginTop: 5,
-                }}
-              >
-                Product price
-              </Text>
-              <Text
-                style={{
-                  fontFamily: "nunito-semibold",
-                  fontSize: 15,
-                  textAlign: "right",
-                  flex: 1,
-                }}
-              >
-                value x qty
-              </Text>
-            </View>
-
-            {/*status  template and its value */}
-            <View
-              style={{
-                // backgroundColor: "brown",
-                flexDirection: "row",
-                alignItems: "flex-end",
-              }}
-            >
-              <Text
-                style={{
-                  fontFamily: "nunito-semibold",
-                  fontSize: 15,
-                  marginTop: 5,
-                }}
-              >
-                Status
-              </Text>
-              <Text
-                style={{
-                  fontFamily: "nunito-semibold",
-                  fontSize: 15,
-                  textAlign: "right",
-                  flex: 1,
-                }}
-              >
-                Status Value
-              </Text>
-            </View>
-
-            <View
-              style={{
-                borderBottomWidth: 0.5,
-                borderColor: "gray",
-                marginTop: 10,
-              }}
-            ></View>
-            <View
-              style={{
-                // backgroundColor: "brown",
-                flexDirection: "row",
-                alignItems: "flex-end",
-              }}
-            >
-              <Text
-                style={{
-                  fontFamily: "nunito-semibold",
-                  fontSize: 17,
-                  marginTop: 6,
-                }}
-              >
-                Total
-              </Text>
-              <Text
-                style={{
-                  fontFamily: "nunito-semibold",
-                  fontSize: 15,
-                  textAlign: "right",
-                  flex: 1,
-                }}
-              >
-                Total Value
-              </Text>
-            </View>
-
-            <View
-              style={{
-                backgroundColor: "transparent",
-                height: 50,
-                flexDirection: "row",
-                justifyContent:'flex-end',
-              }}
-            >
-              <TouchableOpacity onPress={onPressHandlerShowModal}>
-                <View
-                  style={{
-                   // backgroundColor: "red",
-                    marginTop: 15,
-                    height: 25,
-                    borderRadius: 5,
-                    padding: 4,
-                    flexDirection: "row",
-                    width: 30,
-                    height:30,
-                    justifyContent: "center",
-                    marginLeft: 85,
-                    marginRight: 5,
-                   // elevation: 4,
-                    alignItems:'center'
-                  }}
-                >
-                  {/* <Text style={{ fontFamily: "nunito-semibold" }}>
-                    Feedback
-                  </Text> */}
-                  <MaterialIcons name="feedback" size={24} color="black" />
-                </View>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={() => {
-                  Alert.alert("Confirmation", "Order received?", [
-                    {
-                      text: "Not yet",
-                      onPress: () => {
-                        console.log("not yet pressed!");
-                      },
-                    },
-                    {
-                      text: "Yes",
-                      onPress: () => {
-                        console.log("Yes pressed!");
-                      },
-                    },
-                  ]);
-                }}
-              >
-                <View
-                  style={{
-                  //  backgroundColor: "red",
-                    marginTop: 15,
-                    height: 25,
-                    //borderRadius: 5,
-                    padding: 4,
-                    flexDirection: "row",
-                    width: 30,
-                    justifyContent: "center",
-                    marginRight:1,
-                   height:30,
-                  }}
-                >
-                  {/* <Text style={{ fontFamily: "nunito-semibold" }}>
-                    Received
-                  </Text> */}
-                  <MaterialIcons name="done" size={24} color="black" style={{marginBottom:-10}}/>
-                </View>
-              </TouchableOpacity>
-            </View>
-          </View>
+          )}
         </View>
       </View>
     </View>
