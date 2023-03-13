@@ -7,13 +7,16 @@ import {
   ScrollView,
   SafeAreaView,
   Platform,
+  FlatList,
 } from "react-native";
+import CheckBox from "expo-checkbox";
 import React, { useState, useEffect } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import CustomButton from "../../shared/customButton";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useRoute } from "@react-navigation/native";
+import { globalStyles } from "../../ForStyle/GlobalStyles";
 export default function ProductDetailsAndPlaceOrder({ navigation }) {
   const route = useRoute();
   const { storeName, item } = route.params;
@@ -25,19 +28,41 @@ export default function ProductDetailsAndPlaceOrder({ navigation }) {
     { label: "Reservation", value: "reservation", key: 23 },
     { label: "Express", value: "express", key: 33 },
   ]);
+  const [checkedItemKey_deliveryType, setCheckedItemKey_deliveryType] =
+    useState(null);
+
+  const handleItemChecked_deliveryType = (item) => {
+    setCheckedItemKey_deliveryType(
+      item.key === checkedItemKey ? null : item.key
+    );
+  };
 
   const [ordertype, setorderType] = useState([
     { label: "Refill", value: "refill", key: 12 },
     { label: "New Order", value: "new_order", key: 23 },
   ]);
 
+  const [checkedItemKey_orderType, setCheckedItemKey_orderType] =
+    useState(null);
+
+  const handleItemChecked_orderType = (item) => {
+    setCheckedItemKey_orderType(
+      item.key === checkedItemKey_orderType ? null : item.key
+    );
+  };
   const [swapGallonOption, setswapGallonOption] = useState([
     { label: "New Gallon", value: "newgallon", key: 12 },
     { label: "Old Gallon", value: "oldgallon", key: 23 },
     { label: "No Thanks", value: "nothanks", key: 34 },
   ]);
-  // console.log("test");
 
+  const [checkedItemKey_swapGallon, setCheckedItemKey_swapGallon] =
+    useState(null);
+  const handleItemchecked_swapgallon = (item) => {
+    setCheckedItemKey_swapGallon(
+      item.key === checkedItemKey_swapGallon ? null : item.key
+    );
+  }; // console.log("test");
   const [count, setCount] = useState(0);
   const [amount, setAmount] = useState("Amount");
   const handleIncrement = () => {
@@ -63,7 +88,7 @@ export default function ProductDetailsAndPlaceOrder({ navigation }) {
   useEffect(() => {
     compute();
   }, [count]);
-
+  const [isSelected, setSelection] = useState(false);
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
@@ -94,6 +119,7 @@ export default function ProductDetailsAndPlaceOrder({ navigation }) {
   const [selectedOptionOrderType, setSelectedOptionOrderType] = useState(null);
   const [selectedOptionDeliveryType, setSelectedOptionDeliveryType] =
     useState(null);
+
   return (
     <SafeAreaView style={styles.safeviewStyle}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -224,163 +250,191 @@ export default function ProductDetailsAndPlaceOrder({ navigation }) {
                 </Text>
               </View>
 
+              {/*delivery type */}
               <View style={styles.ViewforDelivery}>
                 <Text
                   style={{
                     fontSize: 17,
                     fontFamily: "nunito-semibold",
-                    marginLeft: 10,
-                  }}
-                >
-                  Order Type
-                </Text>
-
-                {deliveryType.map((item) => {
-                  return (
-                    <View
-                      key={item.key}
-                      style={{
-                        
-                        backgroundColor: "whitesmoke",
-                        marginTop: 35,
-                        height: 25,
-                        borderRadius: 5,
-                        padding: 4,
-                        flexDirection: "row",
-                        width: 90,
-                        // alignItems:'flex-start',
-                        justifyContent: "center",
-                        marginLeft: -60,
-                        marginRight: 70,
-                        elevation: 2,
-                      }}
-                    >
-                      <TouchableOpacity
-                        activeOpacity={0.3}
-                       
-                        onPress={() => {
-                          setSelectedOptionOrderType(item.value);
-
-                          console.log(item.value);
-                        }}
-                      >
-                        <Text
-                          style={{
-                            fontFamily: "nunito-light",
-                            fontSize: 16,
-                            flexDirection: "row",
-                          }}
-                        >
-                          {item.label}
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                  );
-                })}
-              </View>
-
-              <View style={styles.viewOrderType}>
-                <Text
-                  style={{
-                    fontSize: 17,
-                    fontFamily: "nunito-semibold",
-                    marginLeft: 10,
+                    marginLeft: 5,
                   }}
                 >
                   Delivery Type
                 </Text>
-
-                {ordertype.map((item) => {
+                {deliveryType.map((item) => {
+                  const isChecked = item.key === checkedItemKey_deliveryType;
                   return (
                     <View
-                    key={item.key}
                       style={{
-                        backgroundColor: "whitesmoke",
+                        //backgroundColor: "red",
                         marginTop: 35,
                         height: 25,
                         borderRadius: 5,
-                        padding: 4,
+                        padding: 0,
                         flexDirection: "row",
-                        width: 90,
-                        // alignItems:'flex-start',
+                        width: 100,
+
                         justifyContent: "center",
                         marginLeft: -75,
-                        marginRight: 85,
-                        elevation: 2,
+                        marginRight: 80,
+                        // elevation: 2,
+                        alignItems: "center",
                       }}
                     >
                       <TouchableOpacity
-                        activeOpacity={0.3}
-                        
+                        key={item.key}
                         onPress={() => {
-                          setSelectedOptionDeliveryType(item.value);
-
+                          handleItemChecked_deliveryType(item);
                           console.log(item.value);
                         }}
                       >
-                        <Text
-                          style={{
-                            fontFamily: "nunito-light",
-                            fontSize: 16,
-                            flexDirection: "row",
-                          }}
-                        >
-                          {item.label}
-                        </Text>
+                        <View style={styles.checkbox}>
+                          {isChecked && (
+                            <MaterialIcons
+                              name="done"
+                              size={15}
+                              color="black"
+                              styles={{ alignItems: "center" }}
+                            />
+                          )}
+                        </View>
                       </TouchableOpacity>
+                      <Text
+                        style={{
+                          fontFamily: "nunito-light",
+                          fontSize: 16,
+                          flexDirection: "row",
+                        }}
+                      >
+                        {item.label}
+                      </Text>
                     </View>
                   );
                 })}
               </View>
 
+              {/* order type */}
               <View style={styles.viewOrderType}>
                 <Text
                   style={{
                     fontSize: 17,
                     fontFamily: "nunito-semibold",
-                    marginLeft: 10,
+                    marginLeft: 5,
+                  }}
+                >
+                  Order Type
+                </Text>
+                {ordertype.map((item) => {
+                  const isChecked = item.key === checkedItemKey_orderType;
+                  return (
+                    <View
+                      style={{
+                        //   backgroundColor: "red",
+                        marginTop: 35,
+                        height: 25,
+                        borderRadius: 5,
+                        padding: 0,
+                        flexDirection: "row",
+                        width: 100,
+
+                        justifyContent: "center",
+                        marginLeft: -70,
+                        marginRight: 80,
+                        // elevation: 2,
+                        alignItems: "center",
+                      }}
+                    >
+                      <TouchableOpacity
+                        key={item.key}
+                        onPress={() => {
+                          handleItemChecked_orderType(item);
+                          console.log(item.value);
+                        }}
+                      >
+                        <View style={styles.checkbox}>
+                          {isChecked && (
+                            <MaterialIcons
+                              name="done"
+                              size={15}
+                              color="black"
+                              styles={{ alignItems: "center" }}
+                            />
+                          )}
+                        </View>
+                      </TouchableOpacity>
+                      <Text
+                        style={{
+                          fontFamily: "nunito-light",
+                          fontSize: 16,
+                          flexDirection: "row",
+                        }}
+                      >
+                        {item.label}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </View>
+
+              {/*swap gallon*/}
+
+              <View style={styles.viewforSwapGallong}>
+                <Text
+                  style={{
+                    fontSize: 17,
+                    fontFamily: "nunito-semibold",
+                    marginLeft: 5,
                   }}
                 >
                   Swap Gallon
                 </Text>
-
                 {swapGallonOption.map((item) => {
+                  const isChecked = item.key === checkedItemKey_swapGallon;
                   return (
                     <View
-                    key={item.key}
                       style={{
-                        backgroundColor: "whitesmoke",
+                        //   backgroundColor: "red",
                         marginTop: 35,
                         height: 25,
                         borderRadius: 5,
-                        padding: 4,
+                        padding: 0,
                         flexDirection: "row",
-                        width: 90,
-                        // alignItems:'flex-start',
+                        width: 100,
+
                         justifyContent: "center",
-                        marginLeft: -75,
-                        marginRight: 85,
-                        elevation: 2,
+                        marginLeft: -57,
+                        marginRight: 60,
+                        // elevation: 2,
+                        alignItems: "center",
                       }}
                     >
                       <TouchableOpacity
-                        activeOpacity={0.3}
-                       
+                        key={item.key}
                         onPress={() => {
-                          setSelectedOptionSwapGallon(item.value);
+                          handleItemchecked_swapgallon(item);
                           console.log(item.value);
                         }}
                       >
-                        <Text
-                          style={{
-                            fontFamily: "nunito-light",
-                            fontSize: 16,
-                            flexDirection: "row",
-                          }}
-                        >
-                          {item.label}
-                        </Text>
+                        <View style={styles.checkbox}>
+                          {isChecked && (
+                            <MaterialIcons
+                              name="done"
+                              size={15}
+                              color="black"
+                              styles={{ alignItems: "center" }}
+                            />
+                          )}
+                        </View>
                       </TouchableOpacity>
+                      <Text
+                        style={{
+                          fontFamily: "nunito-light",
+                          fontSize: 16,
+                          flexDirection: "row",
+                        }}
+                      >
+                        {item.label}
+                      </Text>
                     </View>
                   );
                 })}
@@ -391,7 +445,7 @@ export default function ProductDetailsAndPlaceOrder({ navigation }) {
                   style={{
                     fontSize: 17,
                     fontFamily: "nunito-semibold",
-                    marginLeft: 10,
+                    marginLeft: 2,
                   }}
                 >
                   {text}
@@ -419,17 +473,70 @@ export default function ProductDetailsAndPlaceOrder({ navigation }) {
                   onChange={onChange}
                 />
               )}
-              <View style={styles.viewforCustomButton}>
-                <CustomButton
-                  text="Place order"
-                  onPress={() =>{
-                    navigation.navigate("OrderScreen", {
-                      storeName: route.params.storeName,
-                    })
-                    console.log('3rd screen'+route.params.storeName);
-                  } }
-                />
+              <View style={styles.viewTotalAmount}>
+                <Text
+                  style={{
+                    fontSize: 17,
+                    fontFamily: "nunito-semibold",
+                    marginLeft: 10,
+                  }}
+                >
+                  Total Amount
+                </Text>
               </View>
+              <View
+                style={{
+                  backgroundColor: "red",
+                  padding: 10,
+                  marginTop: 40,
+                  height: 50,
+                }}
+              >
+                <View
+                  style={{
+                    backgroundColor: "transparent",
+                    marginTop: 20,
+                    height: 50,
+                  }}
+                >
+                  <TouchableOpacity onPress={()=>{
+                    navigation.navigate("OrderScreen");
+                  }}>
+                    <View
+                      style={{
+                        borderRadius: 10,
+                        paddingVertical: 10,
+                        paddingHorizontal: 10,
+                        backgroundColor: "#87cefa",
+                        marginTop: -30,
+                        width: 200,
+                        left: 70,
+                        height: 40,
+                      }}
+                    >
+                      <Text
+                        style={[
+                          globalStyles.buttonText,
+                          { marginTop: 0, left: 0 },
+                        ]}
+                      >
+                        Submit
+                      </Text>
+                      <MaterialIcons
+                        name="login"
+                        size={24}
+                        color="black"
+                        style={[
+                          globalStyles.loginIcon,
+                          { backgroundColor: "transparent", marginLeft: -70 },
+                        ]}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              {/* custom button */}
             </View>
           </View>
         </View>
@@ -439,6 +546,23 @@ export default function ProductDetailsAndPlaceOrder({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  checkbox: {
+    width: 18,
+    height: 18,
+    borderWidth: 1,
+    borderRadius: 4,
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: 0,
+    marginRight: 5,
+    // backgroundColor:'blue'
+  },
+  checkboxMark: {
+    width: 10,
+    height: 10,
+    borderRadius: 2,
+    backgroundColor: "black",
+  },
   container: {
     flex: 1,
     backgroundColor: "lightcyan",
@@ -559,7 +683,7 @@ const styles = StyleSheet.create({
     height: 30,
     padding: 6,
     borderRadius: 8,
-    marginTop: 80,
+    marginTop: 50,
     elevation: 3,
     flexDirection: "row",
     //flex:1
@@ -579,6 +703,35 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   viewforCustomButton: {
+    backgroundColor: "blue",
     marginLeft: 15,
+    top: 70,
+    width: 100,
+  },
+  ViewCheckbox: {
+    flexDirection: "row",
+    alignItems: "center",
+    //backgroundColor: "red",
+  },
+  checkboxContainer: {
+    backgroundColor: "red",
+    borderWidth: 0,
+    padding: 0,
+    marginRight: 50,
+  },
+  checkboxText: {
+    marginRight: 50,
+  },
+  viewTotalAmount: {
+    backgroundColor: "white",
+    width: 120,
+    height: 30,
+    padding: 6,
+    borderRadius: 8,
+    // borderColor: "black",
+    // borderWidth: 1,
+    marginTop: 15,
+    elevation: 3,
+    justifyContent: "center",
   },
 });

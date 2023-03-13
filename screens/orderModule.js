@@ -124,8 +124,9 @@ export default function ProductComponent() {
                   keyboardType="numeric"
                 />
               </View>
-              {/*for custom Submit button */}
+             
             </View>
+             {/*for custom Submit button */}
             <View
               style={{
                 backgroundColor: "transparent",
